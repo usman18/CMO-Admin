@@ -150,34 +150,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             reference_listener=reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    CreatedUser createdUser = dataSnapshot.getValue(CreatedUser.class);
+                    CreatedUser createdUser=new CreatedUser();
+                    createdUser = dataSnapshot.getValue(CreatedUser.class);
+                    if(createdUser!=null) {
+                        if (createdUser.isAccountsetup() && createdUser.isMembersetup()) {
 
-                    if (createdUser.isAccountsetup() && createdUser.isMembersetup()) {
+                            Log.d("TAG", "MainScreen Intent");
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Intent intent = new Intent(MainActivity.this, MainScreenActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
 
-                        Log.d("TAG","MainScreen Intent");
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Intent intent = new Intent(MainActivity.this, MainScreenActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                        } else if (!createdUser.isAccountsetup()) {
 
-                    } else if(!createdUser.isAccountsetup()) {
+                            //details screen
+                            Log.d("TAG", "Account Intent");
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Intent intent = new Intent(MainActivity.this, Account_Details.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
 
-                        //details screen
-                        Log.d("TAG","Account Intent");
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Intent intent = new Intent(MainActivity.this, Account_Details.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
+                        } else if (createdUser.isAccountsetup() && !createdUser.isMembersetup()) {
 
-                    }else if(createdUser.isAccountsetup() && !createdUser.isMembersetup()){
-
-                        //Todo : in each of the intents send the toast message as an extra to be displayed on the screen
-                        Log.d("TAG","Family Intent");
-                        progressBar.setVisibility(View.INVISIBLE);
-                        Intent intent=new Intent(MainActivity.this,FamilyMember.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-
+                            //Todo : in each of the intents send the toast message as an extra to be displayed on the screen
+                            Log.d("TAG", "Family Intent");
+                            progressBar.setVisibility(View.INVISIBLE);
+                            Intent intent = new Intent(MainActivity.this, FamilyMember.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
                     }
                 }
 

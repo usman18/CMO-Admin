@@ -23,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainScreenActivity" />
+        <activity android:name=".Activities.MainScreenActivity"
+            />
         <activity android:name=".Activities.Create_Account" />
         <activity android:name=".Activities.Account_Details" />
         <activity android:name=".Activities.Details2Activity" />

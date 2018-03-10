@@ -7,19 +7,23 @@
     android:layout_height="match_parent"
     tools:context="com.uk.cmo.Activities.MainScreenActivity">
 
-    <!--<android.support.v7.widget.Toolbar-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/colorPrimary"-->
-        <!--app:title="CMO"-->
-        <!--app:titleTextColor="#FFFFFF"-->
-        <!--/>-->
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:title="CMO"
+        android:id="@+id/toolbar"
+        app:titleTextColor="#FFFFFF"
+        />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        app:tabTextColor="#666666"
-        app:tabSelectedTextColor="#000000"
+        android:background="@color/colorPrimary"
+        app:tabTextColor="#c9cdd1"
+        app:tabIndicatorColor="#FFFFFF"
+        app:tabIndicatorHeight="4dp"
+        app:tabSelectedTextColor="#FFFFFF"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TabItem

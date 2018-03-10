@@ -6,7 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -18,18 +17,22 @@ public class MainScreenActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private android.support.v7.widget.Toolbar toolbar;
     private ViewPagerAdapter viewPagerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.CustomTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
-
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-
+        setSupportActionBar(toolbar);
         if(!MainActivity.called){
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             MainActivity.called=true;
         }
+        toolbar=findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         firebaseAuth=FirebaseAuth.getInstance();
         tabLayout=findViewById(R.id.tab_layout);
         viewPager=findViewById(R.id.view_pager);
@@ -40,11 +43,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_screen_options,menu);
-        return true;
-    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

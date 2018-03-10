@@ -10,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -54,6 +56,12 @@ public class Posts extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.posts,container,false);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.main_screen_options,menu);
     }
 
     @Override
@@ -105,7 +113,6 @@ public class Posts extends Fragment {
                 holder.name.setText(model.getUser_name());
                 holder.description.setText(model.getDescription());
                 holder.timestamp.setText(model.getTimestamp());
-
                 FetchImages(holder,model);
 
             }
@@ -129,21 +136,20 @@ public class Posts extends Fragment {
                             @Override
                             public void run() {
 
-                                Picasso.with(getContext())
-                                        .load(entity.getPost_uri())
-                                        .placeholder(R.drawable.loading_placeholder)
-                                        .into(holder.post_image, new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-                                                holder.progressBar.setVisibility(View.INVISIBLE);
-                                            }
+                                    Picasso.with(getContext())
+                                            .load(entity.getPost_uri())
+                                            .placeholder(R.drawable.loading_placeholder)
+                                            .into(holder.post_image, new Callback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    holder.progressBar.setVisibility(View.INVISIBLE);
+                                                }
 
-                                            @Override
-                                            public void onError() {
-                                                holder.progressBar.setVisibility(View.INVISIBLE);
-                                            }
-                                        });
-
+                                                @Override
+                                                public void onError() {
+                                                    holder.progressBar.setVisibility(View.INVISIBLE);
+                                                }
+                                            });
                                 Picasso.with(getContext())
                                         .load(entity.getUser_pp())
                                         .placeholder(R.drawable.profile)
@@ -198,5 +204,9 @@ public class Posts extends Fragment {
 
     }
 
-
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 }
