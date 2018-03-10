@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">CMO</string>
+    <string name="personal_details_textview"><u>Personal Details</u></string>
+    <string name="prof_details_text"><u>Professional Details</u></string>
+    <string name="header_details">Family Representative Details</string>
+    <string name="message_member">Press the + button to add details about the members of the family</string>
+    <string-array name="blood_group">
+        <item>A+</item>
+        <item>A-</item>
+        <item>B+</item>
+        <item>B-</item>
+        <item>AB+</item>
+        <item>AB-</item>
+        <item>O+</item>
+        <item>O-</item>
+    </string-array>
+</resources>
