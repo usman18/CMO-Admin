@@ -51,8 +51,9 @@ public class Members extends Fragment {
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
+    private ValueEventListener listener;
     private ArrayAdapter<String> adapter;
-    private DatabaseReference reference;
+    private DatabaseReference reference,member_ref;
     private Thread thread;
     private Query query;
 
@@ -99,7 +100,7 @@ public class Members extends Fragment {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
         firebaseAuth = FirebaseAuth.getInstance();
-        reference = FirebaseDatabase.getInstance().getReference("AllUsers");
+        reference = FirebaseDatabase.getInstance().getReference("Representatives");
         recyclerView = view.findViewById(R.id.recycler_fragment);
         name_list=new ArrayList<>();
         id_map=new HashMap<>();
@@ -181,8 +182,8 @@ public class Members extends Fragment {
         super.onStart();
         if(mFirebaseAdapter!=null)
                 mFirebaseAdapter.startListening();
-
-        reference.addValueEventListener(new ValueEventListener() {
+        member_ref=FirebaseDatabase.getInstance().getReference("AllUsers");
+        listener=member_ref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                        name_list.clear();
@@ -299,6 +300,9 @@ public class Members extends Fragment {
         super.onStop();
         if(mFirebaseAdapter!=null)
             mFirebaseAdapter.stopListening();
+
+        if(reference!=null )
+            reference.removeEventListener(listener);
     }
 
     @Override

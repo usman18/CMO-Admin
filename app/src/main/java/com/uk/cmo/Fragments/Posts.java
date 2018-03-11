@@ -10,8 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,12 +19,16 @@ import android.widget.TextView;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.uk.cmo.Activities.AddPost;
+import com.uk.cmo.Model.CreatedUser;
 import com.uk.cmo.Model.PostEntity;
 import com.uk.cmo.R;
 
@@ -47,6 +49,8 @@ public class Posts extends Fragment {
     private LinearLayoutManager mLinearlayoutmanager;
     private FloatingActionButton add_post;
     private Query query;
+    private ProgressBar auth_progressbar;
+    private TextView auth_msg;
     public static Posts getInstance(){
         return new Posts();
     }
@@ -58,11 +62,6 @@ public class Posts extends Fragment {
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main_screen_options,menu);
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -71,6 +70,9 @@ public class Posts extends Fragment {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }
         firebaseAuth=FirebaseAuth.getInstance();
+        auth_progressbar=view.findViewById(R.id.auth_progressbar);
+        auth_progressbar.setVisibility(View.VISIBLE);
+        auth_msg=view.findViewById(R.id.auth_msg_id);
         recyclerView=view.findViewById(R.id.post_recyclerview);
         add_post=view.findViewById(R.id.add_posts);
 
@@ -92,6 +94,7 @@ public class Posts extends Fragment {
                 startActivity(add_post_intent);
             }
         });
+
 
         query=reference.child("Posts");
         query.keepSynced(true);
@@ -122,6 +125,7 @@ public class Posts extends Fragment {
         firebaseRecyclerAdapter.notifyDataSetChanged();
 
     }
+
 
     private void FetchImages(final PostViewHolder holder, final PostEntity entity){
 
@@ -166,6 +170,18 @@ public class Posts extends Fragment {
         fetch.start();
     }
 
+    private void enableFeatures(){
+        auth_progressbar.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        //Todo fab will be made visible in admin side
+    }
+
+    private void disableFeatures(){
+        auth_progressbar.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
+        auth_msg.setVisibility(View.VISIBLE);
+    }
+
 
 
     @Override
@@ -174,6 +190,33 @@ public class Posts extends Fragment {
         if(firebaseRecyclerAdapter!=null){
             firebaseRecyclerAdapter.startListening();
         }
+
+        DatabaseReference check_ref=FirebaseDatabase.getInstance().getReference("Users")
+                .child(firebaseAuth.getCurrentUser().getUid());
+
+        check_ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                CreatedUser createdUser=dataSnapshot.getValue(CreatedUser.class);
+                if(createdUser!=null){
+                    if(createdUser.isLegit()){
+                        //Enable Features
+                        //Disable Text and Progressbar
+                        enableFeatures();
+                    }else {
+                        //Just Display the text and disable progress bar
+                        disableFeatures();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override
@@ -204,9 +247,4 @@ public class Posts extends Fragment {
 
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
 }
