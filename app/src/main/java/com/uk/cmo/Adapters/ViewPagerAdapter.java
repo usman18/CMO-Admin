@@ -1,5 +1,6 @@
 package com.uk.cmo.Adapters;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -55,5 +56,12 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 break;
         }
         return title;
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+
+        //returning position none makes it possible to reload adapter
+        return POSITION_NONE;
     }
 }

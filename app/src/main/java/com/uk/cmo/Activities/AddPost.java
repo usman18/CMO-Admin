@@ -29,9 +29,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.uk.cmo.Model.PostEntity;
 import com.uk.cmo.R;
 
-import java.text.DateFormat;
-import java.util.Date;
-
 public class AddPost extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private DatabaseReference databaseReference;
@@ -100,10 +97,8 @@ public class AddPost extends AppCompatActivity {
 
     private void InstantiateObject() {
 
-        DateFormat dateFormat=DateFormat.getDateInstance();
-        String date=dateFormat.format(new Date(System.currentTimeMillis()));
 
-        postEntity.setTimestamp(date);
+        postEntity.setTimeinmillis(System.currentTimeMillis()*(-1));
         postEntity.setDescription(description.getText().toString().trim());
         postEntity.setUser_name(name);
         postEntity.setUser_pp(pp);
@@ -134,6 +129,7 @@ public class AddPost extends AppCompatActivity {
                 pp=dataSnapshot.child("profile_pic").getValue(String.class);
                 post_id=databaseReference.push().getKey();
                 Toast.makeText(getApplicationContext(),name,Toast.LENGTH_SHORT).show();
+
 
             }
             @Override

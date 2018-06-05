@@ -24,8 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.uk.cmo.Model.CreatedUser;
 import com.uk.cmo.R;
+import com.uk.cmo.Utility.Constants;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public static boolean called=false;
@@ -61,14 +63,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         authStateListener=new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth!=null){
-                    firebaseUser=auth.getCurrentUser();
+                if(firebaseUser==null){
+                    firebaseUser=firebaseAuth.getCurrentUser();
+                    if (firebaseUser!=null)
+                        Log.d("TAG","user not null in authstate");
+                    InitializeToken();
                     BypassActivity();
                  }
             }
         };
 
     }
+
+    private void InitializeToken() {
+
+        String token= FirebaseInstanceId.getInstance().getToken();
+        sendRegistrationTokenToServer(token);
+
+    }
+
+    private void sendRegistrationTokenToServer(String token){
+
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
+        if (firebaseUser!=null) {
+            Log.d("TAG", "user not null in registration");
+            reference.child(Constants.USERS).child(firebaseUser.getUid()).child(Constants.USERS_TOKEN).setValue(token);
+        }else
+            Log.d("TAG", "user null in method due to some reason");
+
+    }
+
+
+
+
+
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -112,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if(task.isSuccessful()){
                                             firebaseUser= auth.getCurrentUser();
+                                            InitializeToken();
                                             BypassActivity();
                                         }
                                     }

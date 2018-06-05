@@ -68,13 +68,16 @@
                     android:src="@drawable/loading_placeholder"
                     android:id="@+id/post"
                     />
-                <ProgressBar
-                    android:layout_marginBottom="30dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center"
+
+                <com.github.ybq.android.spinkit.SpinKitView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/post_progress"
-                    />
+                    style="@style/SpinKitView.Large.ThreeBounce"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="25dp"
+                    android:layout_gravity="bottom|center"
+                    app:SpinKit_Color="@color/colorAccent" />
             </FrameLayout>
 
             <TextView

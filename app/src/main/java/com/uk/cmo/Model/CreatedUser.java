@@ -9,14 +9,22 @@ public class CreatedUser {
     boolean accountsetup;
     boolean membersetup;
     boolean legit;   //getters and setter will be added for this once admin signup is included
+    String token;
 
 
     public CreatedUser() {
 
     }
 
+    public String getToken() {
+        return token;
+    }
 
-    public CreatedUser(String full_name, String user_name, boolean accountsetup,boolean membersetup) {
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public CreatedUser(String full_name, String user_name, boolean accountsetup, boolean membersetup) {
         this.full_name = full_name;
         this.user_name = user_name;
         this.accountsetup = accountsetup;

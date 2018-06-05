@@ -16,6 +16,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <service
+            android:name=".Utility.MessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service android:name=".Utility.InstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+
         <activity android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +48,9 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Activities.FamilyMember" />
         <activity android:name=".Activities.AddPost" />
-        <activity android:name=".Activities.Profile"></activity>
+        <activity android:name=".Activities.Profile"
+            android:theme="@style/ProfileTheme"
+            ></activity>
     </application>
 
 </manifest>

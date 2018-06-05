@@ -9,11 +9,20 @@ public class PostEntity {
     private String post_uri;
     private String user_name;
     private String user_pp;
-    private String timestamp;
     private String description;
+    private long timeinmillis;
 
     public PostEntity() {
     }
+
+    public long getTimeinmillis() {
+        return timeinmillis;
+    }
+
+    public void setTimeinmillis(long timeinmillis) {
+        this.timeinmillis = timeinmillis;
+    }
+
 
     public String getPost_id() {
         return post_id;
@@ -45,14 +54,6 @@ public class PostEntity {
 
     public void setUser_pp(String user_pp) {
         this.user_pp = user_pp;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
     }
 
     public String getDescription() {

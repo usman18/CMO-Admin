@@ -15,4 +15,9 @@
         <item>O+</item>
         <item>O-</item>
     </string-array>
+
+    <string-array name="sort_filter">
+        <item>Only Representatives</item>
+        <item>All Users</item>
+    </string-array>
 </resources>

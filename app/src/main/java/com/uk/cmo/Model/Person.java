@@ -5,6 +5,10 @@ package com.uk.cmo.Model;
  */
 
 public class Person {
+    //Todo : Use a boolean to identify btw representative or family member
+    // Todo : if representative fetch its family members from MEMBERS node
+    //Todo : if member display relation with representative (along with name of repres)
+    //Todo : For that store Uid of the representative as well and name of representative
     String name;
     String email_id;
     String contact_number;
