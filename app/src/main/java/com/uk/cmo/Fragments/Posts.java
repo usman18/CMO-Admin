@@ -1,6 +1,7 @@
 package com.uk.cmo.Fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
 
-import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,13 +35,14 @@ import java.util.ArrayList;
 public class Posts extends Fragment {
     private final int POSTS_PER_PAGE = 4;
     private FirebaseAuth firebaseAuth;
-    private SpinKitView loading_progressbar;
+    private ProgressBar loading_progressbar;
 //    private TextView msg;
     private DatabaseReference reference;
     //    private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLinearlayoutmanager;
 //    private FloatingActionButton add_post;
+    private  Query query;
     private ArrayList<PostEntity> postsArrayList = new ArrayList<>();
     private ArrayList<String> postIDs=new ArrayList<>();
     private PostAdapter adapter;
@@ -82,17 +84,22 @@ public class Posts extends Fragment {
         loading_progressbar.setVisibility(View.VISIBLE);
         recyclerView = view.findViewById(R.id.post_recyclerview);
 //        add_post = view.findViewById(R.id.add_posts);
-        recyclerView.setHasFixedSize(true);
+//        recyclerView.setHasFixedSize(true);
 
         mLinearlayoutmanager = new LinearLayoutManager(getActivity());
+        mLinearlayoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
 //        mLinearlayoutmanager.setReverseLayout(true);
 //        mLinearlayoutmanager.setStackFromEnd(true);
 
         recyclerView.setLayoutManager(mLinearlayoutmanager);
+        recyclerView.setHasFixedSize(false);
+        FetchData(0);
         adapter = new PostAdapter(getContext(), postsArrayList);
         recyclerView.setAdapter(adapter);
-        FetchData(0);
+
+
+
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -127,48 +134,82 @@ public class Posts extends Fragment {
 
 
 
-    public void FetchData(long millis) {
-        Query query;
+
+    public  void FetchData(final long millis) {
         loading_progressbar.setVisibility(View.VISIBLE);
 
-        if (millis == 0) {
-            Log.d("CHECKCALL","In if of fetch data");
-            query = reference.orderByChild("timeinmillis").limitToFirst(POSTS_PER_PAGE);
-        } else {
-            Log.d("CHECKCALL","In else of fetch data");
-            query = reference.limitToFirst(POSTS_PER_PAGE).startAt(millis);
-            query = reference.limitToFirst(POSTS_PER_PAGE).startAt(millis)
-                    .orderByChild("timeinmillis");
-        }
-        query.keepSynced(true);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                    PostEntity entity=snapshot.getValue(PostEntity.class);
-                    if (!postIDs.contains(entity.getPost_id())){
-                        postIDs.add(entity.getPost_id());
-                        postsArrayList.add(entity);
-                        Log.d("CHECK: ",entity.getDescription());
-                    }
+            public void run() {
+                if (millis == 0) {
+                    Log.d("CHECKCALL","In if of fetch data");
+                    query = reference.orderByChild("timeinmillis").limitToFirst(POSTS_PER_PAGE);
+                } else {
+                    Log.d("CHECKCALL","In else of fetch data");
+                    query = reference.limitToFirst(POSTS_PER_PAGE).startAt(millis)
+                            .orderByChild("timeinmillis");
                 }
+                query.keepSynced(true);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (postsArrayList.size()!=0)
-                    last_entity=postsArrayList.get(postsArrayList.size()-1);
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
 
-                loading_progressbar.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
+                            PostEntity entity=snapshot.getValue(PostEntity.class);
+                            if (!postIDs.contains(entity.getPost_id())){
+                                postIDs.add(entity.getPost_id());
+                                postsArrayList.add(entity);
+                                Log.d("CHECK: ",entity.getDescription());
+                            }
+                        }
+
+
+                        if (postsArrayList.size()!=0)
+                            last_entity=postsArrayList.get(postsArrayList.size()-1);
+
+                        loading_progressbar.setVisibility(View.GONE);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
             }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        },2000);
     }
+
+}
+
+//     class FetchPosts extends AsyncTask<Void,Void,Void>{
+//
+//        long millis;
+//
+//        public FetchPosts(long millis) {
+//            this.millis = millis;
+//        }
+//
+//         @Override
+//         protected void onPreExecute() {
+//             super.onPreExecute();
+//             loading_progressbar.setVisibility(View.VISIBLE);
+//         }
+//
+//         @Override
+//         protected Void doInBackground(Void... voids) {
+//             FetchData(millis);
+//             return null;
+//         }
+//
+//         @Override
+//         protected void onPostExecute(Void aVoid) {
+//             super.onPostExecute(aVoid);
+//             loading_progressbar.setVisibility(View.GONE);
+//         }
+//     }
 
 //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -186,7 +227,7 @@ public class Posts extends Fragment {
 //        }
 //        return super.onOptionsItemSelected(item);
 //    }
-}
+
 
 
 

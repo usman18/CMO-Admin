@@ -71,6 +71,8 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
             name=itemView.findViewById(R.id.member_name_row);
             relation=itemView.findViewById(R.id.member_Relation_row);
 
+
         }
+
     }
 }

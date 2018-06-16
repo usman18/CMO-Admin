@@ -1,18 +1,20 @@
 package com.uk.cmo.Activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +38,8 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
 
+
+
         Bundle bundle=getIntent().getExtras();
         id=bundle.getString("UID");
 
@@ -53,7 +57,7 @@ public class Profile extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
-        collapsingToolbarLayout=findViewById(R.id.collapsing_toolabar_layout);
+        collapsingToolbarLayout=findViewById(R.id.collapsing_toolbar_layout);
         reference= FirebaseDatabase.getInstance().getReference(Constants.ALLUSERS);
 
 
@@ -131,10 +135,21 @@ public class Profile extends AppCompatActivity {
 
                     collapsingToolbarLayout.setTitle(person.getName());
 
-                    Glide.with(getApplicationContext())
-                            .load(person.getProfile_pic())
-                            .apply(new RequestOptions().placeholder(R.drawable.profile))
-                            .into(pro_image);
+//                    Glide.with(getApplicationContext())
+//                            .load(person.getProfile_pic())
+//                            .apply(new RequestOptions().placeholder(R.drawable.profile))
+//                            .into(pro_image);
+                    Bitmap bitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.bg);
+                    Palette.from(bitmap).generate(new Palette.PaletteAsyncListener() {
+                        public void onGenerated(Palette palette) {
+                            int mutedColor = palette.getMutedColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary));
+                            int mutedDarkColor = palette.getDarkMutedColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                            int vibrantColor = palette.getVibrantColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                            collapsingToolbarLayout.setContentScrimColor(mutedColor);
+                            collapsingToolbarLayout.setStatusBarScrimColor(mutedDarkColor);
+                        }
+                    });
+
 
                     mail.setText(person.getEmail_id());
                     number.setText(person.getContact_number());

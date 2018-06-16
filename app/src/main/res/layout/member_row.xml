@@ -85,7 +85,7 @@
             android:layout_alignStart="@id/member_name_row"
             android:layout_below="@id/member_Relation_row"
             android:layout_marginTop="12dp"
-            android:background="@color/greyColor"
+            android:background="@color/darkgreyColor"
             />
 
 

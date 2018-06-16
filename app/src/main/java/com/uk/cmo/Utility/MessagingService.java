@@ -33,9 +33,11 @@ public class MessagingService extends FirebaseMessagingService {
 
         try {
 
-            title=remoteMessage.getNotification().getTitle();
-            body=remoteMessage.getNotification().getBody();
+//            title=remoteMessage.getNotification().getTitle();
+//            body=remoteMessage.getNotification().getBody();
 
+              title=remoteMessage.getData().get("title");
+              body=remoteMessage.getData().get("text");
 
         }catch (NullPointerException e){
             e.printStackTrace();
@@ -70,14 +72,14 @@ public class MessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALL);
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
                 .setAutoCancel(true)   //Automatically delete the notification
                 .setSmallIcon(R.mipmap.ic_launcher) //Notification icon
                 .setContentIntent(pendingIntent)
                 .setContentTitle(notificationTitle)
-                .setContentText(notificationBody)
-                .setSound(defaultSoundUri);
+                .setContentText(notificationBody);
+//                .setSound(defaultSoundUri);
 
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

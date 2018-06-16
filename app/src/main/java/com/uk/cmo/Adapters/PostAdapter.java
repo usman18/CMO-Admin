@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,70 +53,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     public void onBindViewHolder(@NonNull final PostViewHolder holder, int position) {
         final PostEntity entity=postslist.get(position);
 
-        holder.name.setText(entity.getUser_name());
-        holder.description.setText(entity.getDescription());
+        holder.setName(entity.getUser_name());
+
+        holder.setImage(entity.getPost_uri(),entity.getUser_pp());
+
+        holder.setDescription(entity.getDescription());
+        Log.d("Adapter : ","Descrition : "+entity.getDescription());
+
+        Log.d("Adapter : ", "ImageURI : "+entity.getPost_uri());
 
         long exact_millis=entity.getTimeinmillis()*(-1);
-        String date= Date.ToString(exact_millis);
-        holder.timestamp.setText(date);
 
-        Glide.with(context)
-                .load(entity.getPost_uri())
-                .apply(new RequestOptions().placeholder(R.drawable.loading_placeholder))
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(holder.post_image);
+        holder.setTimestamp(exact_millis);
 
 
-//        Picasso.with(context)
-//                .setIndicatorsEnabled(true);
-//
-//        Picasso.with(context)
-//        .load(entity.getPost_uri())
-//        .placeholder(R.drawable.loading_placeholder)
-//        .fetch(new Callback() {
-//            @Override
-//            public void onSuccess() {
-//                Picasso.with(context)
-//                        .load(entity.getPost_uri())
-//                        .into(holder.post_image);
-//                holder.progressBar.setVisibility(View.INVISIBLE);
-//            }
-//
-//            @Override
-//            public void onError() {
-//
-//            }
-//        });
 
-//        .into(holder.post_image, new Callback() {
-//            @Override
-//            public void onSuccess() {
-//
-//            }
-//
-//            @Override
-//            public void onError() {
-////                holder.progressBar.setVisibility(View.INVISIBLE);
-//            }
-//        });
-
-        Glide.with(context)
-                .load(entity.getUser_pp())
-                .apply(new RequestOptions().placeholder(R.drawable.profile))
-                .into(holder.profile_pic);
-
-}
+    }
     @Override
     public int getItemCount() {
         return postslist.size();
@@ -132,13 +85,63 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public PostViewHolder(View itemView) {
             super(itemView);
 
-            name=itemView.findViewById(R.id.post_name);
-            timestamp=itemView.findViewById(R.id.post_timestamp);
-            description=itemView.findViewById(R.id.post_desc);
-            post_image=itemView.findViewById(R.id.post);
-            profile_pic=itemView.findViewById(R.id.post_profile_image);
             progressBar=itemView.findViewById(R.id.post_progress);
 
         }
+
+        void setName(String username){
+            name=itemView.findViewById(R.id.post_name);
+            name.setText(username);
+        }
+
+        void setImage(String imageURI,String profileURI){
+            post_image=itemView.findViewById(R.id.post);
+            profile_pic=itemView.findViewById(R.id.post_profile_image);
+            if (imageURI==null){
+                post_image.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+            }else if (imageURI!=null){
+                Glide.with(context)
+                        .load(imageURI)
+                        .apply(new RequestOptions().placeholder(R.drawable.loading_placeholder))
+                        .listener(new RequestListener<Drawable>() {
+                            @Override
+                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+                            @Override
+                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                progressBar.setVisibility(View.GONE);
+                                return false;
+                            }
+                        })
+                        .into(post_image);
+
+            }
+
+            Glide.with(context)
+                    .load(profileURI)
+                    .apply(new RequestOptions().placeholder(R.drawable.profile))
+                    .into(profile_pic);
+
+        }
+
+        void setDescription(String postDespcription){
+
+            description=itemView.findViewById(R.id.post_desc);
+            description.setText(postDespcription);
+
+        }
+
+        void setTimestamp(long millis){
+
+            timestamp=itemView.findViewById(R.id.post_timestamp);
+            String date= Date.ToString(millis);
+            timestamp.setText(date);
+
+        }
+
+
     }
 }

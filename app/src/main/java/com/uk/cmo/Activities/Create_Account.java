@@ -18,10 +18,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.uk.cmo.Model.CreatedUser;
 import com.uk.cmo.R;
-import com.uk.cmo.Utility.Constants;
 
 import static com.uk.cmo.Activities.MainActivity.called;
 
@@ -138,7 +136,6 @@ public class Create_Account extends AppCompatActivity {
                                         if(task.isSuccessful()){
 
                                             progressBar.setVisibility(View.INVISIBLE);
-                                            InitializeToken();
 
                                             Intent details_intent=new Intent(Create_Account.this,Account_Details.class);
                                             details_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -163,24 +160,6 @@ public class Create_Account extends AppCompatActivity {
        };
        SigninThread.start();
     }
-
-    private void InitializeToken() {
-
-        String token= FirebaseInstanceId.getInstance().getToken();
-        SendRegistrationTokenToServer(token);
-
-    }
-
-    private void SendRegistrationTokenToServer(String token) {
-
-        DatabaseReference reference=FirebaseDatabase.getInstance().getReference();
-        reference.child(Constants.USERS)
-                .child(firebaseAuth.getCurrentUser().getUid())
-                .child(Constants.USERS_TOKEN)
-                .setValue(token);
-
-    }
-
 
     private void Disable_Widgets() {
         email.setEnabled(false);

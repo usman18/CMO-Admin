@@ -16,11 +16,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.uk.cmo.Adapters.ViewPagerAdapter;
 import com.uk.cmo.Model.CreatedUser;
@@ -56,27 +58,21 @@ public class MainScreenActivity extends AppCompatActivity {
         viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
         tabLayout.setupWithViewPager(viewPager);
         new Authentic().execute();
-
+//
+//        Toast.makeText(getApplicationContext(),"TimeStamp :" , ServerValue.TIMESTAMP);
 
         add_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent add_post_intent = new Intent(MainScreenActivity.this, AddPost.class);
-                startActivityForResult(add_post_intent,1);
+                startActivity(add_post_intent);
+
             }
         });
 
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==1 && resultCode==RESULT_OK)
-            viewPager.setAdapter(viewPagerAdapter);
-            viewPager.getAdapter().notifyDataSetChanged();
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -96,8 +92,27 @@ public class MainScreenActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    private void InitializeToken() {
 
-    class Authentic extends AsyncTask<Void,Void,Boolean>{
+        String token= FirebaseInstanceId.getInstance().getToken();
+        sendRegistrationTokenToServer(token);
+
+    }
+
+    private void sendRegistrationTokenToServer(String token){
+
+        DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
+        FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
+        if (firebaseUser!=null) {
+            Log.d("TAG", "user not null");
+            reference.child(Constants.USERS).child(firebaseUser.getUid()).child(Constants.USERS_TOKEN).setValue(token);
+        }else
+            Log.d("TAG", "user null in method due to some reason");
+
+    }
+
+
+    private class Authentic extends AsyncTask<Void,Void,Void>{
 
         @Override
         protected void onPreExecute() {
@@ -105,8 +120,7 @@ public class MainScreenActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... voids) {
-
+        protected Void doInBackground(Void... voids) {
             check_ref.child(firebaseAuth.getCurrentUser().getUid())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -114,12 +128,13 @@ public class MainScreenActivity extends AppCompatActivity {
                             CreatedUser user=dataSnapshot.getValue(CreatedUser.class);
                             if (user != null) {
                                 if (!user.isLegit()){
+                                    tabLayout.setVisibility(View.GONE);
                                     msg.setVisibility(View.VISIBLE);
+                                    add_post.setVisibility(View.INVISIBLE);
                                 }else {
-
                                     subscribeToPosts();
                                     viewPager.setAdapter(viewPagerAdapter);
-
+                                    InitializeToken();
                                 }
                             }
 
@@ -130,16 +145,13 @@ public class MainScreenActivity extends AppCompatActivity {
 
                         }
                     });
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-
-            Log.d("Boolean : ",String.valueOf(aBoolean));
-
-
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 

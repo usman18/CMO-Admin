@@ -157,7 +157,7 @@ public class AddPost extends AppCompatActivity {
                                     progressDialog.setMessage("Uploading...");
                                     progressDialog.show();
 
-                                    StorageReference reference=storageReference.child("PostPics").child(image_uri.getLastPathSegment());
+                                    StorageReference reference=storageReference.child("PostPics").child(image_uri.getLastPathSegment()+System.currentTimeMillis());
 
                                     reference.putFile(image_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                         @Override
