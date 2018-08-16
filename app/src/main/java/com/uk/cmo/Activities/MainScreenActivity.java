@@ -1,6 +1,8 @@
 package com.uk.cmo.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -38,6 +40,7 @@ public class MainScreenActivity extends AppCompatActivity {
     private FloatingActionButton add_post;
     private ViewPagerAdapter viewPagerAdapter;
     private TextView msg;
+    private boolean legit=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,17 +49,60 @@ public class MainScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_screen);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 //        setSupportActionBar(toolbar);
-        toolbar=findViewById(R.id.toolbar);
+
+//        Bundle bundle=getIntent().getExtras();
+//        legit=bundle.getBoolean("legit");
+
+
+
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        firebaseAuth=FirebaseAuth.getInstance();
-        check_ref= FirebaseDatabase.getInstance().getReference(Constants.USERS);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        check_ref = FirebaseDatabase.getInstance().getReference(Constants.USERS);
         add_post = findViewById(R.id.add_posts);
-        tabLayout=findViewById(R.id.tab_layout);
-        viewPager=findViewById(R.id.view_pager);
-        msg=findViewById(R.id.auth_msg);
-        viewPagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+        msg = findViewById(R.id.auth_msg);
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getIcon() != null){
+                    tab.getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if (tab.getIcon() != null){
+                    tab.getIcon().setColorFilter(Color.parseColor("#c9cdd1"), PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+//        if (!legit){
+//            tabLayout.setVisibility(View.GONE);
+//            msg.setVisibility(View.VISIBLE);
+//            add_post.setVisibility(View.INVISIBLE);
+//        }else {
+//            subscribeToPosts();
+//            viewPager.setAdapter(viewPagerAdapter);
+//            msg.setVisibility(View.INVISIBLE);
+//            add_post.setVisibility(View.VISIBLE);
+//            InitializeToken();
+//        }
+
+
+
         new Authentic().execute();
 //
 //        Toast.makeText(getApplicationContext(),"TimeStamp :" , ServerValue.TIMESTAMP);
@@ -76,7 +122,7 @@ public class MainScreenActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.post_options,menu);
         return true;
     }
@@ -85,6 +131,7 @@ public class MainScreenActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.sign_out:
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.POSTS);
                 firebaseAuth.signOut();
                 startActivity(new Intent(MainScreenActivity.this, MainActivity.class));
                 finish();
@@ -134,6 +181,11 @@ public class MainScreenActivity extends AppCompatActivity {
                                 }else {
                                     subscribeToPosts();
                                     viewPager.setAdapter(viewPagerAdapter);
+
+                                    tabLayout.getTabAt(2).setIcon(getResources()
+                                    .getDrawable(R.drawable.ic_notification_bell));
+
+
                                     InitializeToken();
                                 }
                             }
@@ -154,6 +206,7 @@ public class MainScreenActivity extends AppCompatActivity {
             super.onPostExecute(aVoid);
         }
     }
+
 
     private void subscribeToPosts(){
 

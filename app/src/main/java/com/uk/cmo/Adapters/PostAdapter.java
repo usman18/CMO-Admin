@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -31,117 +32,182 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by usman on 21-04-2018.
  */
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter{
 
-    private Context context;
-    private ArrayList<PostEntity> postslist;
+    Context context;
+    ArrayList<PostEntity> postEntities;
 
-    public PostAdapter(Context context, ArrayList<PostEntity> postslist) {
+    public PostAdapter(Context context, ArrayList<PostEntity> postEntities) {
+
+        Log.d("RV ","In Adapter Constructor");
         this.context = context;
-        this.postslist = postslist;
+        this.postEntities = postEntities;
     }
 
     @NonNull
     @Override
-    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.post_row,parent,false);
-        return new PostViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        Log.d("RV ",String.valueOf(viewType));
+        switch (viewType){
+            case PostEntity.POST:
+                Log.d("RV ","In OnCreate PostViewHolder");
+                view=LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.post_row,parent,false);
+                return new PostViewHolder(view);
+            case PostEntity.NOTICE:
+
+                Log.d("RV ","In OnCreate NoticeViewHolder");
+                view=LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.notice,parent,false);
+                return new NoticeViewHolder(view);
+            default:
+                return null;
+        }
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final PostViewHolder holder, int position) {
-        final PostEntity entity=postslist.get(position);
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
 
-        holder.setName(entity.getUser_name());
+        Log.d("RV ","In OnBind ViewHolder");
 
-        holder.setImage(entity.getPost_uri(),entity.getUser_pp());
+        PostEntity entity=postEntities.get(position);
 
-        holder.setDescription(entity.getDescription());
-        Log.d("Adapter : ","Descrition : "+entity.getDescription());
+            switch (entity.getPost_type()){
+                case PostEntity.POST:
+                    ((PostViewHolder)holder).username.setText(entity.getUser_name());
 
-        Log.d("Adapter : ", "ImageURI : "+entity.getPost_uri());
+                    long timeinmillis=entity.getTimeinmillis();
+                    timeinmillis=(-1)*timeinmillis;
+                    String date= Date.ToString(timeinmillis);
 
-        long exact_millis=entity.getTimeinmillis()*(-1);
+                    ((PostViewHolder)holder).timestamp.setText(date);
 
-        holder.setTimestamp(exact_millis);
+                        Glide.with(context)
+                                .load(entity.getPost_uri().trim())
+                                .listener(new RequestListener<Drawable>() {
+                                    @Override
+                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                        ((PostViewHolder) holder).postprogress.setVisibility(View.GONE);
+                                        return false;
+                                    }
+
+                                    @Override
+                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                        ((PostViewHolder) holder).postprogress.setVisibility(View.GONE);
+                                        return false;
+                                    }
+                                }).apply(new RequestOptions().placeholder(R.drawable.loading_placeholder))
+                                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
+                                .into(((PostViewHolder) holder).postimage);
 
 
+                    String pp_uri=entity.getUser_pp();
 
+                    if (pp_uri!=null)
+                        pp_uri=pp_uri.trim();
+
+                    Glide.with(context)
+                            .load(pp_uri)
+                            .apply(new RequestOptions().placeholder(R.drawable.profile))
+                            .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
+                            .into((((PostViewHolder) holder).profile_pic));
+
+                    ((PostViewHolder) holder).description.setText(entity.getDescription());
+
+                    break;
+
+                case PostEntity.NOTICE:
+                    ((NoticeViewHolder)holder).username.setText(entity.getUser_name());
+
+                    long millis=entity.getTimeinmillis();
+                    millis = (-1) * millis;
+
+                    Log.d("Time ","GivenTime " + String.valueOf(millis));
+                    Log.d("Time ","SystemTime " + String.valueOf(System.currentTimeMillis()));
+                    Log.d("Time","Diff" + String.valueOf(millis - System.currentTimeMillis()));
+
+                    String time_stamp = Date.ToString(millis);
+
+                    ((NoticeViewHolder) holder).timestamp.setText(time_stamp);
+
+                    String pp_uri1 = entity.getUser_pp();
+
+                    if (pp_uri1 != null)
+                        pp_uri1 = pp_uri1.trim();
+
+                    Glide.with(context)
+                            .load(pp_uri1)
+                            .apply(new RequestOptions().placeholder(R.drawable.profile))
+                            .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL))
+                            .into(((NoticeViewHolder) holder).profile_pic);
+
+                    ((NoticeViewHolder) holder).description.setText(entity.getDescription());
+
+                    break;
+            }
     }
+
     @Override
     public int getItemCount() {
-        return postslist.size();
+
+        Log.d("RV ","Returning size");
+
+        return postEntities.size();
     }
 
-    class PostViewHolder extends RecyclerView.ViewHolder{
+    @Override
+    public int getItemViewType(int position) {
+        PostEntity postEntity=postEntities.get(position);
 
-        TextView name,timestamp,description;
-        ImageView post_image;
+        switch (postEntity.getPost_type()){
+            case PostEntity.POST:
+                return PostEntity.POST;
+            case PostEntity.NOTICE:
+                return PostEntity.NOTICE;
+            default:
+                return -1;
+        }
+
+    }
+
+    public static class PostViewHolder extends RecyclerView.ViewHolder{
+
+        TextView username,timestamp,description;
         CircleImageView profile_pic;
-        SpinKitView progressBar;
+        ImageView postimage;
+        SpinKitView postprogress;
 
 
         public PostViewHolder(View itemView) {
             super(itemView);
 
-            progressBar=itemView.findViewById(R.id.post_progress);
-
-        }
-
-        void setName(String username){
-            name=itemView.findViewById(R.id.post_name);
-            name.setText(username);
-        }
-
-        void setImage(String imageURI,String profileURI){
-            post_image=itemView.findViewById(R.id.post);
-            profile_pic=itemView.findViewById(R.id.post_profile_image);
-            if (imageURI==null){
-                post_image.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-            }else if (imageURI!=null){
-                Glide.with(context)
-                        .load(imageURI)
-                        .apply(new RequestOptions().placeholder(R.drawable.loading_placeholder))
-                        .listener(new RequestListener<Drawable>() {
-                            @Override
-                            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                return false;
-                            }
-                            @Override
-                            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
-                                return false;
-                            }
-                        })
-                        .into(post_image);
-
-            }
-
-            Glide.with(context)
-                    .load(profileURI)
-                    .apply(new RequestOptions().placeholder(R.drawable.profile))
-                    .into(profile_pic);
-
-        }
-
-        void setDescription(String postDespcription){
-
-            description=itemView.findViewById(R.id.post_desc);
-            description.setText(postDespcription);
-
-        }
-
-        void setTimestamp(long millis){
-
+            username=itemView.findViewById(R.id.post_name);
             timestamp=itemView.findViewById(R.id.post_timestamp);
-            String date= Date.ToString(millis);
-            timestamp.setText(date);
+            description=itemView.findViewById(R.id.post_desc);
+            profile_pic=itemView.findViewById(R.id.post_profile_image);
+            postimage=itemView.findViewById(R.id.post);
+            postprogress =itemView.findViewById(R.id.post_progress);
 
         }
 
+    }
 
+    public static class NoticeViewHolder extends RecyclerView.ViewHolder{
+
+        TextView username,timestamp,description;
+        CircleImageView profile_pic;
+
+
+        public NoticeViewHolder(View itemView) {
+            super(itemView);
+
+            username=itemView.findViewById(R.id.post_name);
+            timestamp=itemView.findViewById(R.id.post_timestamp);
+            description=itemView.findViewById(R.id.post_desc);
+            profile_pic=itemView.findViewById(R.id.post_profile_image);
+
+        }
     }
 }

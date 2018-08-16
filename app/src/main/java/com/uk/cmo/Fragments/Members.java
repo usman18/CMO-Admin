@@ -97,6 +97,9 @@ public class Members extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
+                //Todo : Implement Filterable (Adapter) if possible
+
                 query=reference.child(choice).orderByChild("name")
                         .startAt(newText).endAt(newText+"\uf8ff");
                 setUpAdapter(query);

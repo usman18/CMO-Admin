@@ -15,6 +15,7 @@ import android.widget.AbsListView;
 import android.widget.ProgressBar;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +42,6 @@ public class Posts extends Fragment {
     //    private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLinearlayoutmanager;
-//    private FloatingActionButton add_post;
     private  Query query;
     private ArrayList<PostEntity> postsArrayList = new ArrayList<>();
     private ArrayList<String> postIDs=new ArrayList<>();
@@ -82,21 +82,21 @@ public class Posts extends Fragment {
         loading_progressbar=view.findViewById(R.id.loading_progressbar);
 //        msg=view.findViewById(R.id.auth_msg);
         loading_progressbar.setVisibility(View.VISIBLE);
+
+        Log.d("RV ","Before Find View By ID");
         recyclerView = view.findViewById(R.id.post_recyclerview);
 //        add_post = view.findViewById(R.id.add_posts);
-//        recyclerView.setHasFixedSize(true);
-
+        recyclerView.setHasFixedSize(true);
         mLinearlayoutmanager = new LinearLayoutManager(getActivity());
         mLinearlayoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
-//        mLinearlayoutmanager.setReverseLayout(true);
-//        mLinearlayoutmanager.setStackFromEnd(true);
-
-        recyclerView.setLayoutManager(mLinearlayoutmanager);
-        recyclerView.setHasFixedSize(false);
         FetchData(0);
+        recyclerView.setLayoutManager(mLinearlayoutmanager);
         adapter = new PostAdapter(getContext(), postsArrayList);
         recyclerView.setAdapter(adapter);
+
+
+        Log.d("RV ","After setting adapter");
 
 
 
@@ -123,7 +123,9 @@ public class Posts extends Fragment {
                 if (isscrolling && visible+scrolled_items==total_items) {
                     isscrolling=false;
                     Log.d("CHECKCALL:","FETCH DATA FIRED");
-                    FetchData(last_entity.getTimeinmillis());
+                    long millis=last_entity.getTimeinmillis();
+                    FetchData(millis);
+
                 }
 
             }
@@ -135,9 +137,11 @@ public class Posts extends Fragment {
 
 
 
-    public  void FetchData(final long millis) {
-        loading_progressbar.setVisibility(View.VISIBLE);
 
+    public  void FetchData(final long millis) {
+
+        loading_progressbar.setVisibility(View.VISIBLE);
+        Log.d("TAG","Data Fetching");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -165,11 +169,58 @@ public class Posts extends Fragment {
                         }
 
 
-                        if (postsArrayList.size()!=0)
-                            last_entity=postsArrayList.get(postsArrayList.size()-1);
+                        loading_progressbar.setVisibility(View.GONE);
+
+                        if (postsArrayList.size()!=0) {
+                            last_entity = postsArrayList.get(postsArrayList.size() - 1);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                query.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                            PostEntity entity=snapshot.getValue(PostEntity.class);
+                            if (!postIDs.contains(entity.getPost_id())){
+                                postIDs.add(entity.getPost_id());
+                                postsArrayList.add(entity);
+                                Log.d("CHECK: ",entity.getDescription());
+                            }
+                        }
+
 
                         loading_progressbar.setVisibility(View.GONE);
-                        adapter.notifyDataSetChanged();
+
+                        if (postsArrayList.size()!=0) {
+                            last_entity = postsArrayList.get(postsArrayList.size() - 1);
+                            adapter.notifyDataSetChanged();
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
                     }
 
                     @Override
@@ -179,37 +230,10 @@ public class Posts extends Fragment {
                 });
 
             }
-        },2000);
+        },1000);
     }
 
 }
-
-//     class FetchPosts extends AsyncTask<Void,Void,Void>{
-//
-//        long millis;
-//
-//        public FetchPosts(long millis) {
-//            this.millis = millis;
-//        }
-//
-//         @Override
-//         protected void onPreExecute() {
-//             super.onPreExecute();
-//             loading_progressbar.setVisibility(View.VISIBLE);
-//         }
-//
-//         @Override
-//         protected Void doInBackground(Void... voids) {
-//             FetchData(millis);
-//             return null;
-//         }
-//
-//         @Override
-//         protected void onPostExecute(Void aVoid) {
-//             super.onPostExecute(aVoid);
-//             loading_progressbar.setVisibility(View.GONE);
-//         }
-//     }
 
 //    @Override
 //    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -265,48 +289,6 @@ public class Posts extends Fragment {
 //    }
 //
 //
-//    private void FetchImages(final PostViewHolder holder, final PostEntity entity){
-//
-//        fetch=new Thread(){
-//            @Override
-//            public void run() {
-//                super.run();
-//                if(firebaseAuth!=null){
-//                    try {
-//                        fetch.sleep(50);
-//                        getActivity().runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//
-//                                    Picasso.with(getContext())
-//                                            .load(entity.getPost_uri())
-//                                            .placeholder(R.drawable.loading_placeholder)
-//                                            .into(holder.post_image, new Callback() {
-//                                                @Override
-//                                                public void onSuccess() {
-//                                                    holder.progressBar.setVisibility(View.INVISIBLE);
-//                                                }
-//
-//                                                @Override
-//                                                public void onError() {
-//                                                    holder.progressBar.setVisibility(View.INVISIBLE);
-//                                                }
-//                                            });
-//                                Picasso.with(getContext())
-//                                        .load(entity.getUser_pp())
-//                                        .placeholder(R.drawable.profile)
-//                                        .into(holder.profile_pic);
-//                            }
-//                        });
-//                    }catch (Exception e){
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        };
-//
-//        fetch.start();
-//    }
 
 //    private void enableFeatures(){
 //        auth_progressbar.setVisibility(View.INVISIBLE);
