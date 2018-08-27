@@ -26,7 +26,7 @@ import com.uk.cmo.R;
 
 import java.util.ArrayList;
 
-import static com.uk.cmo.Activities.Account_Details.familyMember;
+import static com.uk.cmo.Activities.AccountDetailsActivity.familyMember;
 import static com.uk.cmo.Activities.MainActivity.called;
 public class FamilyMember extends AppCompatActivity implements View.OnClickListener {
     private DatabaseReference member_reference;
@@ -148,7 +148,7 @@ public class FamilyMember extends AppCompatActivity implements View.OnClickListe
         if(item.getItemId()==R.id.add_member){
 
             familyMember=true;               //it is made false later, do not worry about that
-            Intent intent=new Intent(FamilyMember.this,Account_Details.class);
+            Intent intent=new Intent(FamilyMember.this,AccountDetailsActivity.class);
             startActivity(intent);
         }
 

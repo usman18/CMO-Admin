@@ -1,8 +1,6 @@
 package com.uk.cmo.Activities;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -40,7 +38,6 @@ public class MainScreenActivity extends AppCompatActivity {
     private FloatingActionButton add_post;
     private ViewPagerAdapter viewPagerAdapter;
     private TextView msg;
-    private boolean legit=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +45,6 @@ public class MainScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-//        setSupportActionBar(toolbar);
-
-//        Bundle bundle=getIntent().getExtras();
-//        legit=bundle.getBoolean("legit");
-
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -68,26 +60,6 @@ public class MainScreenActivity extends AppCompatActivity {
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getIcon() != null){
-                    tab.getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                if (tab.getIcon() != null){
-                    tab.getIcon().setColorFilter(Color.parseColor("#c9cdd1"), PorterDuff.Mode.SRC_IN);
-                }
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
 
 //        if (!legit){
 //            tabLayout.setVisibility(View.GONE);
@@ -110,7 +82,7 @@ public class MainScreenActivity extends AppCompatActivity {
         add_post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent add_post_intent = new Intent(MainScreenActivity.this, AddPost.class);
+                Intent add_post_intent = new Intent(MainScreenActivity.this, AddPostActivity.class);
                 startActivity(add_post_intent);
 
             }
@@ -181,10 +153,6 @@ public class MainScreenActivity extends AppCompatActivity {
                                 }else {
                                     subscribeToPosts();
                                     viewPager.setAdapter(viewPagerAdapter);
-
-                                    tabLayout.getTabAt(2).setIcon(getResources()
-                                    .getDrawable(R.drawable.ic_notification_bell));
-
 
                                     InitializeToken();
                                 }

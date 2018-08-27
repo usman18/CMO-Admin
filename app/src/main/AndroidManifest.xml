@@ -45,15 +45,15 @@
         <activity android:name=".Activities.MainScreenActivity"
             android:theme="@style/MyCustomTabLayout"
             />
-        <activity android:name=".Activities.Create_Account" />
-        <activity android:name=".Activities.Account_Details" />
-        <activity android:name=".Activities.Details2Activity" />
+        <activity android:name=".Activities.CreateAccountActivity" />
+        <activity android:name=".Activities.AccountDetailsActivity" />
+        <activity android:name=".Activities.ProfessionalDetailsActivity" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Activities.FamilyMember" />
-        <activity android:name=".Activities.AddPost" />
-        <activity android:name=".Activities.Profile"
+        <activity android:name=".Activities.AddPostActivity" />
+        <activity android:name=".Activities.ProfileActivity"
             android:theme="@style/ProfileTheme"
             ></activity>
         <receiver

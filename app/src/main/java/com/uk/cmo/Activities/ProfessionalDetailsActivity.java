@@ -33,16 +33,16 @@ import com.uk.cmo.Model.StudyingPerson;
 import com.uk.cmo.Model.WorkingPerson;
 import com.uk.cmo.R;
 
-import static com.uk.cmo.Activities.Account_Details.Address;
-import static com.uk.cmo.Activities.Account_Details.Blood_group;
-import static com.uk.cmo.Activities.Account_Details.Contact;
-import static com.uk.cmo.Activities.Account_Details.Email;
-import static com.uk.cmo.Activities.Account_Details.full_name;
-import static com.uk.cmo.Activities.Account_Details.isMarried;
-import static com.uk.cmo.Activities.Account_Details.profile_uri;
+import static com.uk.cmo.Activities.AccountDetailsActivity.Address;
+import static com.uk.cmo.Activities.AccountDetailsActivity.Blood_group;
+import static com.uk.cmo.Activities.AccountDetailsActivity.Contact;
+import static com.uk.cmo.Activities.AccountDetailsActivity.Email;
+import static com.uk.cmo.Activities.AccountDetailsActivity.full_name;
+import static com.uk.cmo.Activities.AccountDetailsActivity.isMarried;
+import static com.uk.cmo.Activities.AccountDetailsActivity.profile_uri;
 import static com.uk.cmo.Activities.MainActivity.called;
 
-public class Details2Activity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class ProfessionalDetailsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
     private StorageReference storageReference;
@@ -298,14 +298,14 @@ public class Details2Activity extends AppCompatActivity implements CompoundButto
 
     private void DisplayProgress() {
 
-        Snackbar.make(findViewById(R.id.relative_details2_layout),"Profile Submitted ! ",
+        Snackbar.make(findViewById(R.id.relative_details2_layout),"ProfileActivity Submitted ! ",
                 Snackbar.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
 
-                Intent members_intent=new Intent(Details2Activity.this, FamilyMember.class);
+                Intent members_intent=new Intent(ProfessionalDetailsActivity.this, FamilyMember.class);
                 members_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(members_intent);
 

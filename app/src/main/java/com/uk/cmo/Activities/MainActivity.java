@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 //intent to create account
-                Intent intent=new Intent(MainActivity.this,Create_Account.class);
+                Intent intent=new Intent(MainActivity.this,CreateAccountActivity.class);
                 startActivity(intent);
                 break;
 
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //details screen
                             INTENT_RESULT=USER_DETAILS_ACTIVITY;
                             Log.d("TAG", "Account Intent");
-                            Intent intent = new Intent(MainActivity.this, Account_Details.class);
+                            Intent intent = new Intent(MainActivity.this, AccountDetailsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
                 case USER_DETAILS_ACTIVITY:
                     //
-                    intent = new Intent(MainActivity.this, Account_Details.class);
+                    intent = new Intent(MainActivity.this, AccountDetailsActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
 

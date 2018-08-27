@@ -21,7 +21,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.uk.cmo.Activities.Profile;
+import com.uk.cmo.Activities.ProfileActivity;
 import com.uk.cmo.Model.PostEntity;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Date;
@@ -190,7 +190,7 @@ public class PostAdapter extends RecyclerView.Adapter{
 
     private void loadProfile(String uid) {
 
-        Intent profile_intent = new Intent(context, Profile.class);
+        Intent profile_intent = new Intent(context, ProfileActivity.class);
         profile_intent.putExtra("UID",uid);
         context.startActivity(profile_intent);
     }

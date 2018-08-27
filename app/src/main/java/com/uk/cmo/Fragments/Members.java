@@ -30,7 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.uk.cmo.Activities.Profile;
+import com.uk.cmo.Activities.ProfileActivity;
 import com.uk.cmo.Model.Person;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Constants;
@@ -127,7 +127,7 @@ public class Members extends Fragment {
 //
 //                if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(uid)){
 //
-//                    Intent profile_intent=new Intent(getActivity(), Profile.class);
+//                    Intent profile_intent=new Intent(getActivity(), ProfileActivity.class);
 //                    profile_intent.putExtra("UID",uid);
 //                    startActivity(profile_intent);
 //
@@ -245,7 +245,7 @@ public class Members extends Fragment {
                     @Override
                     public void onClick(View view) {
                      //   Toast.makeText(getContext(),model.getName(),Toast.LENGTH_SHORT).show();
-                        Intent profile_intent=new Intent(getActivity(),Profile.class);
+                        Intent profile_intent=new Intent(getActivity(),ProfileActivity.class);
                         profile_intent.putExtra("UID",model.getID());
                         startActivity(profile_intent);
                     }

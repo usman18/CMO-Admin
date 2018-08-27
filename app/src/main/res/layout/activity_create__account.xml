@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.uk.cmo.Activities.Create_Account">
+    tools:context="com.uk.cmo.Activities.CreateAccountActivity">
 
     <EditText
         android:id="@+id/representative_name_id"

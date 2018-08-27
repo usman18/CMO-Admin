@@ -33,7 +33,7 @@ import com.uk.cmo.Model.PostEntity;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Constants;
 
-public class AddPost extends AppCompatActivity {
+public class AddPostActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
@@ -58,7 +58,7 @@ public class AddPost extends AppCompatActivity {
         //Todo : if not found finish the activity with a toast
         //Todo : even do not upload an image straight away
         //Todo : Upload when user taps submit
-        progressDialog=new ProgressDialog(AddPost.this);
+        progressDialog=new ProgressDialog(AddPostActivity.this);
         new FetchUserDetails().execute();
         firebaseAuth=FirebaseAuth.getInstance();
         databaseReference= FirebaseDatabase.getInstance().getReference();
@@ -75,7 +75,7 @@ public class AddPost extends AppCompatActivity {
             public void onClick(View view) {
                 CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
                         .setAspectRatio(1,1)
-                        .start(AddPost.this);
+                        .start(AddPostActivity.this);
             }
         });
 

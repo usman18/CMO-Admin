@@ -21,9 +21,9 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import com.uk.cmo.Model.Person;
 import com.uk.cmo.R;
 
-import static com.uk.cmo.Activities.Details2Activity.person;
+import static com.uk.cmo.Activities.ProfessionalDetailsActivity.person;
 
-public class Account_Details extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class AccountDetailsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private EditText name,email,contact_num;
     private RadioButton married,unmarried;
     private TextView header_text;
@@ -60,7 +60,7 @@ public class Account_Details extends AppCompatActivity implements CompoundButton
                 Fetch_Entries();
                 if (!NullEntries()){
 
-                    Intent details_2intent = new Intent(Account_Details.this, Details2Activity.class);
+                    Intent details_2intent = new Intent(AccountDetailsActivity.this, ProfessionalDetailsActivity.class);
                     startActivity(details_2intent);
 
                 }else {
@@ -79,7 +79,7 @@ public class Account_Details extends AppCompatActivity implements CompoundButton
                 CropImage.activity()
                         .setAspectRatio(1,1)
                         .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(Account_Details.this);
+                        .start(AccountDetailsActivity.this);
             }
         });
 

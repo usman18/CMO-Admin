@@ -26,7 +26,7 @@ import com.uk.cmo.Model.WorkingPerson;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Constants;
 
-public class Profile extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
     private ProgressBar profile_progressBar;
     private DatabaseReference reference;
     private ImageView pro_image;
@@ -41,13 +41,11 @@ public class Profile extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
 
-
-
         Bundle bundle=getIntent().getExtras();
         id = bundle.getString("UID");
 
         if (id == null) {
-            Toast.makeText(getApplicationContext(),"Could not load Profile !",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"Could not load ProfileActivity !",Toast.LENGTH_SHORT).show();
             finish();
         }
 
@@ -61,9 +59,11 @@ public class Profile extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar=getSupportActionBar();
 
-        if (actionBar!=null) {
+        if (actionBar != null) {
+
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
+
         }
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
         reference = FirebaseDatabase.getInstance().getReference(Constants.ALLUSERS);

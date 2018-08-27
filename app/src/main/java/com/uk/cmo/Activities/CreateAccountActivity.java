@@ -23,7 +23,7 @@ import com.uk.cmo.R;
 
 import static com.uk.cmo.Activities.MainActivity.called;
 
-public class Create_Account extends AppCompatActivity {
+public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference reference;
     private Thread Create_Thread,SigninThread;
@@ -137,7 +137,7 @@ public class Create_Account extends AppCompatActivity {
 
                                             progressBar.setVisibility(View.INVISIBLE);
 
-                                            Intent details_intent=new Intent(Create_Account.this,Account_Details.class);
+                                            Intent details_intent=new Intent(CreateAccountActivity.this,AccountDetailsActivity.class);
                                             details_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(details_intent);
 
