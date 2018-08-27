@@ -32,6 +32,7 @@ import com.uk.cmo.Model.Person;
 import com.uk.cmo.Model.StudyingPerson;
 import com.uk.cmo.Model.WorkingPerson;
 import com.uk.cmo.R;
+import com.uk.cmo.Utility.Constants;
 
 import static com.uk.cmo.Activities.AccountDetailsActivity.Address;
 import static com.uk.cmo.Activities.AccountDetailsActivity.Blood_group;
@@ -47,7 +48,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
     private FirebaseAuth firebaseAuth;
     private StorageReference storageReference;
     private ProgressBar progressBar;
-    private Thread data_thread, profilepic_thread;
+    private Thread data_thread, upload_thread;
     private RadioButton working,studying;
     private LinearLayout working_linear_layout,studying_linear_layout;
     private TextView message_textview;
@@ -72,7 +73,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
             called=true;
         }
 
-        setUpFirebase();
+        setUpFirebaseInstances();
         setUpInstances();
 
 
@@ -108,15 +109,17 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
             @Override
             public void onClick(View view) {
                 if(!working.isChecked() && !studying.isChecked())
+
                     Snackbar.make(findViewById(R.id.relative_details2_layout),"Please select one of the above options !",Snackbar.LENGTH_SHORT).show();
+
                 else{
 
-                    Fetch_Entries();
-                    Create_Object();
+                    getProfessionalDetails();   //gets  professional details of user
+                    setAllDetails();   // object of Person class is set up
 
-                    if(!Null_Entries()){
+                    if(!checkIfAnyValueIsNull()){
 
-                        Append_ProfilePicTo_Firebase();    //first profile thread has to be called so it wil generate the download uri which will be later appended in data thread
+                        uploadProfilePic();    //first profile thread has to be called so it wil generate the download uri which will be later appended in data thread
 
                     }else
 
@@ -127,14 +130,17 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
         });
     }
 
-    private void Create_Object() {
+    private void setAllDetails() {
 
-        person.setName(full_name);
+        person.setName(full_name.trim());
+        person.setName_lower_case(full_name.toLowerCase().trim());
+
         person.setEmail_id(Email);
         person.setContact_number(Contact);
         person.setBlood_group(Blood_group);
         person.setMarried(isMarried);
-        if(working.isChecked()){          //Todo : disable layout later
+
+        if(working.isChecked()){
 
             WorkingPerson workingPerson = new WorkingPerson();
             workingPerson.setOccupation(Occupation);
@@ -174,23 +180,23 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
         }
     }
 
-    private void setUpFirebase() {
+    private void setUpFirebaseInstances() {
 
-        databaseReference=FirebaseDatabase.getInstance().getReference();
-        firebaseAuth=FirebaseAuth.getInstance();
-        storageReference= FirebaseStorage.getInstance().getReference();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseAuth = FirebaseAuth.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
     }
 
-    private void Append_ProfilePicTo_Firebase() {
+    private void uploadProfilePic() {
 
-        profilepic_thread =new Thread() {
+        upload_thread =new Thread() {
             @Override
             public void run() {
                 super.run();
-                if(profile_uri!=null) {
+                if(profile_uri != null) {
                   try {
-                      profilepic_thread.sleep(250);
+                      upload_thread.sleep(250);
                       runOnUiThread(new Runnable() {
                           @Override
                           public void run() {
@@ -205,7 +211,8 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
 
                                       download_uri = taskSnapshot.getDownloadUrl();
                                       progressBar.setVisibility(View.INVISIBLE);
-                                      Call_Data_Thread();
+                                      saveDataToDb();
+
                                   }
                               }).addOnFailureListener(new OnFailureListener() {
                                   @Override
@@ -223,20 +230,22 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
             }
         };
 
-        profilepic_thread.start();
 
-        if(profile_uri==null){
-            Call_Data_Thread();
+
+        if(profile_uri == null){
+            saveDataToDb();
+        }else {
+            upload_thread.start();
         }
 
     }
 
-    private void Call_Data_Thread() {
-        data_thread =new Thread(){
+    private void saveDataToDb() {
+        data_thread = new Thread(){
             @Override
             public void run() {
                 super.run();
-                if(firebaseAuth!=null){
+                if(firebaseAuth != null){
                     try {
                         data_thread.sleep(500);
                         runOnUiThread(new Runnable() {
@@ -244,7 +253,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
                             public void run() {
 
                                progressBar.setVisibility(View.VISIBLE);
-                              //  Create_Object();
+                              //  setAllDetails();
                                if(profile_uri!=null && download_uri!=null){
                                    person.setProfile_pic(download_uri.toString());
                                }
@@ -255,25 +264,27 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
                                            .child(firebaseAuth.getCurrentUser().getUid());
                                    member_ref.child(person.getID()).setValue(person);
 
-                                   appendInAllUsersChild(person);
+                                   DatabaseReference reference = databaseReference.child("AllUsers")
+                                           .child(person.getID());
+                                   reference.setValue(person);
 
                                    progressBar.setVisibility(View.INVISIBLE);
                                    //create Intent for members activity
                                    Toast.makeText(getApplicationContext(),"Appended in Members",Toast.LENGTH_LONG).show();
-                                   DisplayProgress();
+                                   updateUI();
 
                                }else if(!person.isMember()){
 
-                                   DatabaseReference representative_Ref=databaseReference.child("Representatives")
+                                   DatabaseReference representative_ref=databaseReference.child(Constants.REPRESENTATIVES)
                                            .child(person.getID());
-                                   representative_Ref.setValue(person);
+                                   representative_ref.setValue(person);
 
-                                   appendInAllUsersChild(person);
+//                                   appendInAllUsersChild(person);
 
-                                   markAccountSetUp();
+                                   setAccountCompleted();
                                    progressBar.setVisibility(View.INVISIBLE);
 
-                                   DisplayProgress();
+                                   updateUI();
                                }
 
                            }
@@ -288,15 +299,8 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
         data_thread.start();
     }
 
-    private void appendInAllUsersChild(Person person) {
 
-        DatabaseReference reference=databaseReference.child("AllUsers")
-                .child(person.getID());
-        reference.setValue(person);
-
-    }
-
-    private void DisplayProgress() {
+    private void updateUI() {
 
         Snackbar.make(findViewById(R.id.relative_details2_layout),"ProfileActivity Submitted ! ",
                 Snackbar.LENGTH_SHORT).show();
@@ -305,7 +309,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
             @Override
             public void run() {
 
-                Intent members_intent=new Intent(ProfessionalDetailsActivity.this, FamilyMember.class);
+                Intent members_intent=new Intent(ProfessionalDetailsActivity.this, MainScreenActivity.class);
                 members_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(members_intent);
 
@@ -314,17 +318,18 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
 
     }
 
-    private void markAccountSetUp() {
+    private void setAccountCompleted() {
 
-        DatabaseReference mark_ref=databaseReference.getRef()
-                .child("Users")
+        DatabaseReference mark_ref = databaseReference.getRef()
+                .child(Constants.USERS)
                 .child(firebaseAuth.getCurrentUser().getUid())
                 .child("accountsetup");
         mark_ref.setValue(true);
         Log.d("Control : ","Marked ");
     }
 
-    private boolean Null_Entries() {
+    private boolean checkIfAnyValueIsNull() {
+
         if(working.isChecked()){
             if(TextUtils.isEmpty(Occupation) || TextUtils.isEmpty(Work_Address)
                     || TextUtils.isEmpty(Work_contact_num)
@@ -334,29 +339,31 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
                 return true;
             else
                 return false;
+
         }else if(studying.isChecked()){
             if(TextUtils.isEmpty(Pursuing) || TextUtils.isEmpty(S_Qualifications))
                 return true;
             else
                 return false;
         }
+
         return true;
     }
 
-    private void Fetch_Entries() {
+    private void getProfessionalDetails() {
 
         if(working.isChecked()){
 
-            Occupation=occupation.getText().toString().trim();
-            Work_Address=work_address.getText().toString().trim();
-            Work_contact_num=work_contact_num.getText().toString().trim();
-            Work_Email=work_email.getText().toString().trim();
-            Qualifications=qualifications.getText().toString().trim();
+            Occupation = occupation.getText().toString().trim();
+            Work_Address = work_address.getText().toString().trim();
+            Work_contact_num = work_contact_num.getText().toString().trim();
+            Work_Email = work_email.getText().toString().trim();
+            Qualifications = qualifications.getText().toString().trim();
 
         }else if(studying.isChecked()){
 
-            Pursuing=pursuing.getText().toString().trim();
-            S_Qualifications=student_qualification.getText().toString().trim();
+            Pursuing = pursuing.getText().toString().trim();
+            S_Qualifications = student_qualification.getText().toString().trim();
 
         }
 
@@ -411,9 +418,9 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
             data_thread.interrupt();
             data_thread =null;
         }
-        if(profilepic_thread!=null){
-            profilepic_thread.interrupt();
-            profilepic_thread=null;
+        if(upload_thread !=null){
+            upload_thread.interrupt();
+            upload_thread =null;
         }
     }
 }

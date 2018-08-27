@@ -10,6 +10,8 @@ public class Person {
     //Todo : if member display relation with representative (along with name of repres)
     //Todo : For that store Uid of the representative as well and name of representative
     String name;
+    String name_lower_case;     //will be used for searching
+
     String email_id;
     String contact_number;
     String profile_pic;
@@ -64,6 +66,14 @@ public class Person {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getName_lower_case() {
+        return name_lower_case;
+    }
+
+    public void setName_lower_case(String name_lower_case) {
+        this.name_lower_case = name_lower_case;
     }
 
     public String getEmail_id() {

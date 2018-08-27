@@ -24,18 +24,21 @@ import com.uk.cmo.R;
 import static com.uk.cmo.Activities.ProfessionalDetailsActivity.person;
 
 public class AccountDetailsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+
     private EditText name,email,contact_num;
     private RadioButton married,unmarried;
     private TextView header_text;
     private Spinner bloodgroup_spinner;
     private EditText address;
     private ImageView profile_pic;
+    private FloatingActionButton floatingActionButton;
+
     public static String full_name,Email,Contact,Blood_group,Address;
     public static Uri profile_uri;
     public static boolean isMarried;
     public static boolean familyMember;
 
-    FloatingActionButton floatingActionButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -117,17 +120,22 @@ public class AccountDetailsActivity extends AppCompatActivity implements Compoun
     }
 
     private void Fetch_Entries() {
+
         full_name=name.getText().toString().trim();
+
         Email=email.getText().toString().trim();
         Contact=contact_num.getText().toString().trim();
         //work on radio buttons
+
         if(married.isChecked() && !unmarried.isChecked())
             isMarried=true;
         else if(unmarried.isChecked() && !married.isChecked())
             isMarried=false;
         //work on Spinner
+
         Blood_group=bloodgroup_spinner.getSelectedItem().toString().trim();
         Address=address.getText().toString().trim();
+
     }
 
     @Override

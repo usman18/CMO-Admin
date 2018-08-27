@@ -3,7 +3,6 @@ package com.uk.cmo.Activities;
 import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -47,10 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView signup;
     private FrameLayout frameLayout;
     private final int USER_DETAILS_ACTIVITY=1;
-    private final int FAMILY_MEMBERS_ACTIVITY=2;
     private final int MAIN_SCREEN_ACTIVITY=3;
     private static int INTENT_RESULT = -1;
-    private static boolean legit=false;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -126,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String pwd_text=password.getText().toString().trim();
 
                 if(!TextUtils.isEmpty(email_id_text) && !TextUtils.isEmpty(pwd_text))
-                    Login(email_id_text,pwd_text);
+                    loginUser(email_id_text,pwd_text);
                 else
                     Toast.makeText(getApplicationContext(),"Please fill in both the fields !",Toast.LENGTH_LONG).show();
                 break;
@@ -143,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    private void Login(final String email_id_text, final String pwd_text) {
+    private void loginUser(final String email_id_text, final String pwd_text) {
 
         DisableWidgets();
 
@@ -194,20 +191,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         if(firebaseUser!=null) {
-            //Todo : Use Async Task For Fetching Member details
-            //Todo : And pass to respective activity using putextras
-            //Todo : This will avoid refetching the details and make sure of a smooth UX
+
             reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
             reference_listener = reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     CreatedUser createdUser;
                     createdUser = dataSnapshot.getValue(CreatedUser.class);
-                    if(createdUser!=null) {
-                        if (createdUser.isAccountsetup() && createdUser.isMembersetup()) {
+                    if(createdUser != null) {
+                        if (createdUser.isAccountsetup()) {
 
-                            legit=createdUser.isLegit();
-                            INTENT_RESULT =MAIN_SCREEN_ACTIVITY;
+                            INTENT_RESULT = MAIN_SCREEN_ACTIVITY;
                             Log.d("TAG", "MainScreen Intent");
                             Intent intent = new Intent(MainActivity.this, MainScreenActivity.class);
                             intent.putExtra("legit",createdUser.isLegit());
@@ -218,23 +212,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else if (!createdUser.isAccountsetup()) {
 
                             //details screen
-                            INTENT_RESULT=USER_DETAILS_ACTIVITY;
+                            INTENT_RESULT = USER_DETAILS_ACTIVITY;
                             Log.d("TAG", "Account Intent");
                             Intent intent = new Intent(MainActivity.this, AccountDetailsActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
 
-                        } else if (createdUser.isAccountsetup() && !createdUser.isMembersetup()) {
-
-                            //Todo : in each of the intents send the toast message as an extra to be displayed on the screen
-                            INTENT_RESULT=FAMILY_MEMBERS_ACTIVITY;
-                            Log.d("TAG", "Family Intent");
-                            Intent intent = new Intent(MainActivity.this, FamilyMember.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
                         }
+
                     }
                 }
 
@@ -249,65 +235,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    class FetchUserDetails extends AsyncTask<Void,Void,Void>{
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-//            progressBar.setVisibility(View.VISIBLE);
-//            DisableWidgets();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            BypassActivity();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            progressBar.setVisibility(View.GONE);
-            EnableWidgets();
-            Intent intent;
-
-            Log.d("TAG","Value of IntentResult "+INTENT_RESULT);
-            Log.d("TAG","Value of MainScreen "+MAIN_SCREEN_ACTIVITY);
-            Log.d("TAG","Value of DetailsActivity "+USER_DETAILS_ACTIVITY);
-            Log.d("TAG","Value of Family "+FAMILY_MEMBERS_ACTIVITY);
-
-            switch (INTENT_RESULT){
-                case MAIN_SCREEN_ACTIVITY:
-                    //
-                    Log.d("TAG","Main Screen Activity");
-                    intent = new Intent(MainActivity.this, MainScreenActivity.class);
-                    intent.putExtra("legit",legit);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-
-                    break;
-                case USER_DETAILS_ACTIVITY:
-                    //
-                    intent = new Intent(MainActivity.this, AccountDetailsActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-
-                    break;
-                case FAMILY_MEMBERS_ACTIVITY:
-                    //
-                    intent = new Intent(MainActivity.this, FamilyMember.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-
-                    break;
-                default:
-                    Toast.makeText(getApplicationContext(),"Could Sign In",Toast.LENGTH_SHORT).show();
-            }
-
-        }
-    }
 
     private void EnableWidgets() {
         email_id.setEnabled(true);
