@@ -14,6 +14,7 @@ public class PostEntity {
     private String user_pp;
     private String description;
     private long timeinmillis;
+    
     public static final int POST=1;
     public static final int NOTICE=2;
 

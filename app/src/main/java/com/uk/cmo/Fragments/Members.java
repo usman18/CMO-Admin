@@ -55,7 +55,7 @@ public class Members extends Fragment {
     private DatabaseReference reference;
     private Thread thread;
     private Query query;
-    private String choice= Constants.REPRESENTATIVES;
+    private String choice = Constants.REPRESENTATIVES;
 
     public static Members getInstance(){
         return new Members();

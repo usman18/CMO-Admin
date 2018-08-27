@@ -79,7 +79,7 @@ public class Posts extends Fragment {
 //        check_ref=FirebaseDatabase.getInstance().getReference(Constants.USERS);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        loading_progressbar=view.findViewById(R.id.loading_progressbar);
+        loading_progressbar = view.findViewById(R.id.loading_progressbar);
 //        msg=view.findViewById(R.id.auth_msg);
         loading_progressbar.setVisibility(View.VISIBLE);
 
@@ -105,7 +105,7 @@ public class Posts extends Fragment {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (newState== AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                     isscrolling=true;
             }
 
@@ -235,93 +235,8 @@ public class Posts extends Fragment {
 
 }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        inflater.inflate(R.menu.post_options,menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()){
-//            case R.id.sign_out:
-//                firebaseAuth.signOut();
-//                getActivity().startActivity(new Intent(getActivity(), MainActivity.class));
-//                getActivity().finish();
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
 
 
 
-
-
-//        enableFeatures();
-//        query = reference.child("Posts");
-//        query.keepSynced(true);
-//        FirebaseRecyclerOptions<PostEntity> options = new FirebaseRecyclerOptions.Builder<PostEntity>()
-//                .setQuery(query, PostEntity.class)
-//                .build();
-//
-//        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<PostEntity, PostViewHolder>(options) {
-//
-//            @Override
-//            public PostViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//                View inlated_post = LayoutInflater.from(parent.getContext())
-//                        .inflate(R.layout.post_row, parent, false);
-//                return new PostViewHolder(inlated_post, getContext());
-//            }
-//
-//            @Override
-//            protected void onBindViewHolder(@NonNull PostViewHolder holder, int position, @NonNull PostEntity model) {
-//                holder.name.setText(model.getUser_name());
-//                holder.description.setText(model.getDescription());
-//                holder.timestamp.setText(model.getTimestamp());
-//                FetchImages(holder, model);
-//
-//            }
-//        };
-//
-//        recyclerView.setAdapter(firebaseRecyclerAdapter);
-//        firebaseRecyclerAdapter.notifyDataSetChanged();
-//
-//    }
-//
-//
-
-//    private void enableFeatures(){
-//        auth_progressbar.setVisibility(View.INVISIBLE);
-//        recyclerView.setVisibility(View.VISIBLE);
-//        //Todo fab will be made visible in admin side
-//    }
-//
-//    private void disableFeatures(){
-//        auth_progressbar.setVisibility(View.INVISIBLE);
-//        recyclerView.setVisibility(View.INVISIBLE);
-//        auth_msg.setVisibility(View.VISIBLE);
-//    }
-
-
-
-
-//    public static class PostViewHolder extends RecyclerView.ViewHolder{
-//        TextView name,timestamp,description;
-//        ImageView post_image;
-//        CircleImageView profile_pic;
-//        ProgressBar progressBar;
-//
-//
-//        public PostViewHolder(View itemView, Context context) {
-//            super(itemView);
-//
-//            name=itemView.findViewById(R.id.post_name);
-//            timestamp=itemView.findViewById(R.id.post_timestamp);
-//            description=itemView.findViewById(R.id.post_desc);
-//            post_image=itemView.findViewById(R.id.post);
-//            profile_pic=itemView.findViewById(R.id.post_profile_image);
-//            progressBar=itemView.findViewById(R.id.post_progress);
-//        }
-//
-//    }
 

@@ -1,6 +1,7 @@
 package com.uk.cmo.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +21,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.uk.cmo.Activities.Profile;
 import com.uk.cmo.Model.PostEntity;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Date;
@@ -72,7 +74,7 @@ public class PostAdapter extends RecyclerView.Adapter{
 
         Log.d("RV ","In OnBind ViewHolder");
 
-        PostEntity entity=postEntities.get(position);
+        final PostEntity entity=postEntities.get(position);
 
             switch (entity.getPost_type()){
                 case PostEntity.POST:
@@ -116,6 +118,20 @@ public class PostAdapter extends RecyclerView.Adapter{
 
                     ((PostViewHolder) holder).description.setText(entity.getDescription());
 
+                    ((PostViewHolder) holder).username.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loadProfile(entity.getUid());
+                        }
+                    });
+
+                    ((PostViewHolder) holder).profile_pic.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loadProfile(entity.getUid());
+                        }
+                    });
+
                     break;
 
                 case PostEntity.NOTICE:
@@ -145,6 +161,20 @@ public class PostAdapter extends RecyclerView.Adapter{
 
                     ((NoticeViewHolder) holder).description.setText(entity.getDescription());
 
+                    ((NoticeViewHolder) holder).profile_pic.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loadProfile(entity.getUid());
+                        }
+                    });
+
+                    ((NoticeViewHolder) holder).username.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            loadProfile(entity.getUid());
+                        }
+                    });
+
                     break;
             }
     }
@@ -156,6 +186,15 @@ public class PostAdapter extends RecyclerView.Adapter{
 
         return postEntities.size();
     }
+
+
+    private void loadProfile(String uid) {
+
+        Intent profile_intent = new Intent(context, Profile.class);
+        profile_intent.putExtra("UID",uid);
+        context.startActivity(profile_intent);
+    }
+
 
     @Override
     public int getItemViewType(int position) {

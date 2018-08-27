@@ -201,10 +201,15 @@ public class AddPost extends AppCompatActivity {
                      name=dataSnapshot.child("name").getValue(String.class);
                      Log.d("Check",name);
                      pp=dataSnapshot.child("profile_pic").getValue(String.class);
-                     Log.d("Check",pp);
-                     post_id=reference.push().getKey();
+
+                     post_id = reference.push().getKey();
                      Log.d("Check",post_id);
-                     uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                     uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                     if (uid == null) {
+                         Toast.makeText(getApplicationContext(),"Could not post",Toast.LENGTH_SHORT).show();
+                         finish();
+                     }
                      Log.d("Check",uid);
 
                  }
