@@ -53,21 +53,19 @@ public class AddPostActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
+        progressDialog = new ProgressDialog(AddPostActivity.this);
 
-        //Todo : Use Async Task To Fetch The User Details in onCreate
-        //Todo : if not found finish the activity with a toast
-        //Todo : even do not upload an image straight away
-        //Todo : Upload when user taps submit
-        progressDialog=new ProgressDialog(AddPostActivity.this);
         new FetchUserDetails().execute();
-        firebaseAuth=FirebaseAuth.getInstance();
-        databaseReference= FirebaseDatabase.getInstance().getReference();
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         databaseReference.keepSynced(true);
-        storageReference=FirebaseStorage.getInstance().getReference();
-        post_image=findViewById(R.id.post_image);
-        description=findViewById(R.id.post_description);
-        submit_button=findViewById(R.id.submit_post);
-        postEntity=new PostEntity();
+
+        storageReference = FirebaseStorage.getInstance().getReference();
+        post_image = findViewById(R.id.post_image);
+        description = findViewById(R.id.post_description);
+        submit_button = findViewById(R.id.submit_post);
+        postEntity = new PostEntity();
 
         post_image.setOnClickListener(new View.OnClickListener() {
 
@@ -84,13 +82,14 @@ public class AddPostActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(description.getText().toString().isEmpty()){
                     Toast.makeText(getApplicationContext(),"Post atleast requires description !", Toast.LENGTH_SHORT).show();
-                }else if (image_uri!=null){
+                }else if (image_uri != null){
 
                     new UploadPost().execute();
 
                 }else {
-                    InstantiateObject();
+                    setPostObject();
                     postEntity.setPost_id(post_id);
+
                     DatabaseReference reference=databaseReference.child("Posts")
                             .child(post_id);
                     reference.setValue(postEntity);
@@ -113,13 +112,13 @@ public class AddPostActivity extends AppCompatActivity {
 
     }
 
-    private void InstantiateObject() {
+    private void setPostObject() {
 
 
-        postEntity.setTimeinmillis(System.currentTimeMillis()*(-1));
+        postEntity.setTimeinmillis(System.currentTimeMillis()*(-1));    // storing in descending order, so latest post comes up
         postEntity.setDescription(description.getText().toString().trim());
 
-        if (name!=null) {
+        if (name != null) {
             postEntity.setUser_name(name);
         }else {
             Toast.makeText(getApplicationContext(),"User Name Not Found",Toast.LENGTH_LONG).show();
@@ -129,38 +128,35 @@ public class AddPostActivity extends AppCompatActivity {
         postEntity.setUser_pp(pp);
 
         String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        if (uid!=null){
+
+        if (uid != null){
             postEntity.setUid(uid);
         }else {
             finish();
             Toast.makeText(getApplicationContext(),"UID Not Found ",Toast.LENGTH_SHORT).show();
         }
 
-        if (post_id!=null){
+        if (post_id != null){
             postEntity.setPost_id(post_id);
         }else {
-            finish();
+            finish();       // if no post id, then simply finish
         }
 
-        if(image_uri!=null && download_uri!=null) {
+        if(image_uri != null && download_uri != null) {
+
             postEntity.setPost_uri(download_uri.toString());
             postEntity.setPost_type(PostEntity.POST);
+
         }else {
             postEntity.setPost_type(PostEntity.NOTICE);
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-//        Fetch();
-
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
@@ -170,7 +166,10 @@ public class AddPostActivity extends AppCompatActivity {
                 post_image.setImageURI(image_uri);
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
                 Exception error = result.getError();
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+
             }
         }
 
@@ -182,9 +181,11 @@ public class AddPostActivity extends AppCompatActivity {
          @Override
          protected void onPreExecute() {
              super.onPreExecute();
+
              progressDialog.setMessage("Loading...");
              progressDialog.setCanceledOnTouchOutside(false);
              progressDialog.show();
+
          }
 
          @Override
@@ -198,9 +199,10 @@ public class AddPostActivity extends AppCompatActivity {
                  public void onDataChange(DataSnapshot dataSnapshot) {
 
 
-                     name=dataSnapshot.child("name").getValue(String.class);
+                     name = dataSnapshot.child("name").getValue(String.class);
                      Log.d("Check",name);
-                     pp=dataSnapshot.child("profile_pic").getValue(String.class);
+
+                     pp = dataSnapshot.child("profile_pic").getValue(String.class);
 
                      post_id = reference.push().getKey();
                      Log.d("Check",post_id);
@@ -231,11 +233,8 @@ public class AddPostActivity extends AppCompatActivity {
 
              progressDialog.dismiss();
 
-             if (name!=null && pp!=null && post_id!=null && uid!=null ){
+             if (name == null ||  post_id == null || uid == null ){
                  Toast.makeText(getApplicationContext(),"User info not found!",Toast.LENGTH_LONG).show();
-                 Intent result=new Intent();
-                 result.putExtra("result",false);
-                 setResult(Activity.RESULT_OK,result);
                  finish();
              }
          }
@@ -255,7 +254,8 @@ public class AddPostActivity extends AppCompatActivity {
 
          @Override
          protected Void doInBackground(Void... voids) {
-             StorageReference post_storage=FirebaseStorage.getInstance().getReference("PostPics")
+
+             StorageReference post_storage = FirebaseStorage.getInstance().getReference("PostPics")
                      .child(uid)
                      .child(image_uri.getLastPathSegment()+System.currentTimeMillis());
 
@@ -263,12 +263,12 @@ public class AddPostActivity extends AppCompatActivity {
                  @Override
                  public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                     download_uri=taskSnapshot.getDownloadUrl();
+                     download_uri = taskSnapshot.getDownloadUrl();
 
                      postEntity.setTimeinmillis(System.currentTimeMillis()*(-1));
                      postEntity.setDescription(description.getText().toString().trim());
 
-                     if (name!=null) {
+                     if (name != null) {
                          postEntity.setUser_name(name);
                      }else {
                          Toast.makeText(getApplicationContext(),"User Name Not Found",Toast.LENGTH_LONG).show();
@@ -291,7 +291,7 @@ public class AddPostActivity extends AppCompatActivity {
                          finish();
                      }
 
-                     if(image_uri!=null && download_uri!=null) {
+                     if(image_uri != null && download_uri != null) {
                          postEntity.setPost_uri(download_uri.toString());
                          postEntity.setPost_type(PostEntity.POST);
                      }else {
