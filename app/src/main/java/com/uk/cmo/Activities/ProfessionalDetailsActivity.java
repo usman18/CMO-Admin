@@ -67,10 +67,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
         setContentView(R.layout.activity_details2_activity);
         getSupportActionBar().hide();
 
-//        if(!called){
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            called=true;
-//        }
+
 
         setUpFirebaseInstances();
         setUpInstances();

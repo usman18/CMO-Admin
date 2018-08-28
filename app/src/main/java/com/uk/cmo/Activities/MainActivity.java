@@ -57,11 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         getSupportActionBar().hide();
 
-//        if(!called){
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            called=true;
-//        }
-
         email_id=findViewById(R.id.email_id);
         password=findViewById(R.id.password_id);
         signin=findViewById(R.id.signin_button);
@@ -73,19 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             ((ViewGroup) findViewById(R.id.root_layout)).getLayoutTransition()
                     .enableTransitionType(LayoutTransition.CHANGING);
-
-
-//        authStateListener=new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                    firebaseUser=firebaseAuth.getCurrentUser();
-//                    if (firebaseUser!=null){
-//                        Log.d("TAG","user not null in authstate");
-////                        new FetchUserDetails().execute();
-//
-//                    }
-//                 }
-//        };
 
 
         new Handler().postDelayed(new Runnable() {

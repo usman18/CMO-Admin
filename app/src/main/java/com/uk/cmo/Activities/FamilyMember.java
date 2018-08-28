@@ -46,12 +46,6 @@ public class FamilyMember extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_member);
 
-//        if(!called){
-//
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            called=true;
-//
-//        }
         setUpInstances();
 
     }

@@ -36,10 +36,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__account);
 
-//        if(!called){
-//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-//            called=true;
-//        }
         reference=FirebaseDatabase.getInstance().getReference("Users");
         firebaseAuth=FirebaseAuth.getInstance();
         email=findViewById(R.id.email_id);
