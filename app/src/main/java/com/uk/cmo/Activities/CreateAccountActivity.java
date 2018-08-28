@@ -21,8 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.uk.cmo.Model.CreatedUser;
 import com.uk.cmo.R;
 
-import static com.uk.cmo.Activities.MainActivity.called;
-
 public class CreateAccountActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference reference;
@@ -38,10 +36,10 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__account);
 
-        if(!called){
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            called=true;
-        }
+//        if(!called){
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            called=true;
+//        }
         reference=FirebaseDatabase.getInstance().getReference("Users");
         firebaseAuth=FirebaseAuth.getInstance();
         email=findViewById(R.id.email_id);

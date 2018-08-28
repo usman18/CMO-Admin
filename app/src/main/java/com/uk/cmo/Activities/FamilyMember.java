@@ -27,7 +27,6 @@ import com.uk.cmo.R;
 import java.util.ArrayList;
 
 import static com.uk.cmo.Activities.AccountDetailsActivity.familyMember;
-import static com.uk.cmo.Activities.MainActivity.called;
 public class FamilyMember extends AppCompatActivity implements View.OnClickListener {
     private DatabaseReference member_reference;
     private DatabaseReference reference;
@@ -47,12 +46,12 @@ public class FamilyMember extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family_member);
 
-        if(!called){
-
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            called=true;
-
-        }
+//        if(!called){
+//
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            called=true;
+//
+//        }
         setUpInstances();
 
     }

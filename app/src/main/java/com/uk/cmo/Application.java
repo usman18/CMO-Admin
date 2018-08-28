@@ -1,19 +1,19 @@
 package com.uk.cmo;
 
-import android.support.multidex.MultiDex;
-import android.support.multidex.MultiDexApplication;
-import android.content.Context;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
- * Created by usman on 07-03-2018.
+ * Created by usman on 28-08-2018.
  */
 
-public class Application extends MultiDexApplication {
+public class Application extends android.app.Application {
 
     @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(this);
+    public void onCreate() {
+        super.onCreate();
+
+        //For enabling offline capabilities.
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
     }
 }
-
-

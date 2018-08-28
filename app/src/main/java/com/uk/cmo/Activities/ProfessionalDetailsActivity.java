@@ -41,7 +41,6 @@ import static com.uk.cmo.Activities.AccountDetailsActivity.Email;
 import static com.uk.cmo.Activities.AccountDetailsActivity.full_name;
 import static com.uk.cmo.Activities.AccountDetailsActivity.isMarried;
 import static com.uk.cmo.Activities.AccountDetailsActivity.profile_uri;
-import static com.uk.cmo.Activities.MainActivity.called;
 
 public class ProfessionalDetailsActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
     private DatabaseReference databaseReference;
@@ -68,10 +67,10 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
         setContentView(R.layout.activity_details2_activity);
         getSupportActionBar().hide();
 
-        if(!called){
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            called=true;
-        }
+//        if(!called){
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            called=true;
+//        }
 
         setUpFirebaseInstances();
         setUpInstances();

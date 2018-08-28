@@ -61,23 +61,7 @@ public class MainScreenActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
 
-//        if (!legit){
-//            tabLayout.setVisibility(View.GONE);
-//            msg.setVisibility(View.VISIBLE);
-//            add_post.setVisibility(View.INVISIBLE);
-//        }else {
-//            subscribeToPosts();
-//            viewPager.setAdapter(viewPagerAdapter);
-//            msg.setVisibility(View.INVISIBLE);
-//            add_post.setVisibility(View.VISIBLE);
-//            InitializeToken();
-//        }
-
-
-
         new Authentic().execute();
-//
-//        Toast.makeText(getApplicationContext(),"TimeStamp :" , ServerValue.TIMESTAMP);
 
         add_post.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,14 +95,14 @@ public class MainScreenActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    private void InitializeToken() {
+    private void initializeToken() {
 
         String token= FirebaseInstanceId.getInstance().getToken();
-        sendRegistrationTokenToServer(token);
+        saveRegisterationTokenToDb(token);
 
     }
 
-    private void sendRegistrationTokenToServer(String token){
+    private void saveRegisterationTokenToDb(String token){
 
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();
@@ -153,8 +137,7 @@ public class MainScreenActivity extends AppCompatActivity {
                                 }else {
                                     subscribeToPosts();
                                     viewPager.setAdapter(viewPagerAdapter);
-
-                                    InitializeToken();
+                                    initializeToken();
                                 }
                             }
 
@@ -184,40 +167,5 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
 
-
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        //Todo: use asynk task / thread for it
-//        //Todo : Replace this code back to where it was in fragment
-//        DatabaseReference check_ref=FirebaseDatabase.getInstance().getReference("Users")
-//                .child(firebaseAuth.getCurrentUser().getUid());
-//
-//        check_ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                CreatedUser createdUser=dataSnapshot.getValue(CreatedUser.class);
-//                if(createdUser!=null){
-//                    if(createdUser.isLegit()){
-//                        legit=true;
-//                        //Enable Features
-//                        //Disable Text and Progressbar
-//             //           enableFeatures();
-//                    }else {
-//                        //Just Display the text and disable progress bar
-//             //           disableFeatures();
-//                        legit=false;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-//    }
 
 }

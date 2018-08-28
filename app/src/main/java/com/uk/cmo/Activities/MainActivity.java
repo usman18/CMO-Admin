@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         getSupportActionBar().hide();
 
-        if(!called){
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            called=true;
-        }
+//        if(!called){
+//            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//            called=true;
+//        }
 
         email_id=findViewById(R.id.email_id);
         password=findViewById(R.id.password_id);

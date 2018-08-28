@@ -66,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         }
         collapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
-        reference = FirebaseDatabase.getInstance().getReference(Constants.ALLUSERS);
+        reference = FirebaseDatabase.getInstance().getReference(Constants.REPRESENTATIVES);
 
 
         pro_image = findViewById(R.id.pro_image);
