@@ -4,8 +4,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -54,7 +52,6 @@ public class MessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent=PendingIntent.getActivity(this,0,new Intent(this, MainScreenActivity.class),0);
 
 
-        //Todo : Check about Channel ID
         NotificationCompat.Builder builder=new NotificationCompat.Builder(this);
         builder.setSmallIcon(R.drawable.ic_action_email)
                 .setContentTitle(title)
@@ -72,14 +69,15 @@ public class MessagingService extends FirebaseMessagingService {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+        String CHANNEL_ID = "my_channel_01";
+
+        NotificationCompat.Builder notificationBuilder =  new NotificationCompat.Builder(this)
                 .setAutoCancel(true)   //Automatically delete the notification
                 .setSmallIcon(R.mipmap.ic_launcher) //Notification icon
                 .setContentIntent(pendingIntent)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationBody);
-//                .setSound(defaultSoundUri);
+
 
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -91,4 +89,5 @@ public class MessagingService extends FirebaseMessagingService {
     public void onDeletedMessages() {
         super.onDeletedMessages();
     }
+
 }

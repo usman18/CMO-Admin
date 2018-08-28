@@ -6,20 +6,26 @@ package com.uk.cmo.Utility;
 
 public class Constants {
 
-    public static final String USERS="Users";
 
-    public static final String REPRESENTATIVES="Representatives";
+    //Nodes
+    public static final String USERS = "Users";
 
-    public static final String POSTS="Posts";
+    public static final String REPRESENTATIVES = "Representatives";
 
-    public static final String MEMBERS="Members";
+    public static final String POSTS = "Posts";
 
-    public static final String ALLUSERS="AllUsers";
+    public static final String MEMBERS = "Members";
+
+    public static final String ALLUSERS = "AllUsers";
 
 
     //Attributes of User Class
 
-    public static final String USERS_TOKEN="token";
+    public static final String USERS_TOKEN = "token";
+
+    //Firebase Storage;
+
+    public static final String POST_PICS = "PostPics";
 
 
 
