@@ -23,6 +23,9 @@ public class Constants {
 
     public static final String USERS_TOKEN = "token";
 
+    public static final String LEGIT = "legit";
+
+
     //Firebase Storage;
 
     public static final String POST_PICS = "PostPics";

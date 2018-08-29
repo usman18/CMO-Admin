@@ -1,7 +1,6 @@
 package com.uk.cmo.Activities;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -53,6 +52,34 @@ public class MainScreenActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         check_ref = FirebaseDatabase.getInstance().getReference(Constants.USERS);
+
+
+        check_ref.child(firebaseAuth.getCurrentUser().getUid())
+        .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                CreatedUser user = dataSnapshot.getValue(CreatedUser.class);
+                if (user != null) {
+                    if (!user.isLegit()){
+                        tabLayout.setVisibility(View.GONE);
+                        msg.setVisibility(View.VISIBLE);
+                        add_post.setVisibility(View.INVISIBLE);
+                    }else {
+                        subscribeToPosts();
+                        viewPager.setAdapter(viewPagerAdapter);
+                        initializeToken();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         add_post = findViewById(R.id.add_posts);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
@@ -61,7 +88,6 @@ public class MainScreenActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
 
-        new Authentic().execute();
 
         add_post.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,48 +142,6 @@ public class MainScreenActivity extends AppCompatActivity {
     }
 
 
-    private class Authentic extends AsyncTask<Void,Void,Void>{
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            check_ref.child(firebaseAuth.getCurrentUser().getUid())
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            CreatedUser user=dataSnapshot.getValue(CreatedUser.class);
-                            if (user != null) {
-                                if (!user.isLegit()){
-                                    tabLayout.setVisibility(View.GONE);
-                                    msg.setVisibility(View.VISIBLE);
-                                    add_post.setVisibility(View.INVISIBLE);
-                                }else {
-                                    subscribeToPosts();
-                                    viewPager.setAdapter(viewPagerAdapter);
-                                    initializeToken();
-                                }
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
 
 
     private void subscribeToPosts(){
