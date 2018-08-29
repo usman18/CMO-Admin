@@ -46,10 +46,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         CharSequence title;
         switch (position){
             case 0:
-                title = "Posts";
+                title = "POSTS";
             break;
             case 1:
-                title = "Members";
+                title = "MEMBERS";
                 break;
             default:
                 title = null;

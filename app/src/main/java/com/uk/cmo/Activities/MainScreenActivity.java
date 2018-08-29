@@ -125,11 +125,11 @@ public class MainScreenActivity extends AppCompatActivity {
     private void initializeToken() {
 
         String token= FirebaseInstanceId.getInstance().getToken();
-        saveRegisterationTokenToDb(token);
+        saveRegistrationTokenToDb(token);
 
     }
 
-    private void saveRegisterationTokenToDb(String token){
+    private void saveRegistrationTokenToDb(String token){
 
         DatabaseReference reference= FirebaseDatabase.getInstance().getReference();
         FirebaseUser firebaseUser=firebaseAuth.getCurrentUser();

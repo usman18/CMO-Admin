@@ -17,9 +17,12 @@
         >
 
         <LinearLayout
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <RelativeLayout
                 android:padding="8dp"
                 android:layout_width="match_parent"
@@ -72,10 +75,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:textColor="#050505"
+                android:textColor="#020202"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="12dp"
                 android:id="@+id/post_desc"
                 android:text="This is some dummy text !"
                 />
