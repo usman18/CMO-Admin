@@ -19,6 +19,10 @@ public class Constants {
     public static final String ALLUSERS = "AllUsers";
 
 
+    //Attributes of Representative Class
+
+    public static final String LOWERCASE_NAME = "name_lower_case";
+
     //Attributes of User Class
 
     public static final String USERS_TOKEN = "token";

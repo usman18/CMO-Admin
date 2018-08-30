@@ -69,7 +69,7 @@ public class MemberAdapter extends RecyclerView.Adapter<MemberAdapter.ViewHolder
 
             profile_pic=itemView.findViewById(R.id.profile_image_member_row);
             name=itemView.findViewById(R.id.member_name_row);
-            relation=itemView.findViewById(R.id.member_Relation_row);
+            relation=itemView.findViewById(R.id.pursuing_occupation);
 
 
         }

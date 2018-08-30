@@ -3,7 +3,6 @@ package com.uk.cmo.Fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +27,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.squareup.picasso.Picasso;
 import com.uk.cmo.Activities.ProfileActivity;
 import com.uk.cmo.Model.Person;
 import com.uk.cmo.R;
@@ -46,7 +44,6 @@ public class Members extends Fragment {
     private SearchView searchView;
     private ImageView filter;
     private DatabaseReference reference;
-    private Thread thread;
     private Query query;
     private String choice = Constants.REPRESENTATIVES;
 
@@ -78,27 +75,16 @@ public class Members extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-
-//                Query query1=reference.orderByChild("name")
-//                        .startAt(query).endAt(query+"\uf8ff");
-//                setUpAdapter(query1);
-//                mFirebaseAdapter.startListening();
-
-
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                //Todo : Implement Filterable (Adapter) if possible
-
-                query=reference.child(choice).orderByChild("name")
-                        .startAt(newText).endAt(newText+"\uf8ff");
+                query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME)
+                        .startAt(newText).endAt(newText + "\uf8ff");
                 setUpAdapter(query);
                 mFirebaseAdapter.startListening();
-
-
 
                 return false;
             }
@@ -111,39 +97,22 @@ public class Members extends Fragment {
             }
         });
 
-//        search_textview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//
-//                String name=search_textview.getText().toString().trim();
-//                String uid=id_map.get(name);
-//
-//                if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(uid)){
-//
-//                    Intent profile_intent=new Intent(getActivity(), ProfileActivity.class);
-//                    profile_intent.putExtra("UID",uid);
-//                    startActivity(profile_intent);
-//
-//                }
-//
-//            }
-//        });
 
     }
 
     private void showAlertDialog() {
 
-        AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        View view=LayoutInflater.from(getContext())
+        View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.filter_dialog,null,false);
 
         builder.setView(view);
-        final Spinner filter_spinner=view.findViewById(R.id.filter_spinner);
-        TextView apply=view.findViewById(R.id.apply_button);
-        TextView cancel=view.findViewById(R.id.cancel_button);
+        final Spinner filter_spinner = view.findViewById(R.id.filter_spinner);
+        TextView apply = view.findViewById(R.id.apply_button);
+        TextView cancel = view.findViewById(R.id.cancel_button);
 
-        final AlertDialog alertDialog=builder.create();
+        final AlertDialog alertDialog = builder.create();
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,14 +125,14 @@ public class Members extends Fragment {
         apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position=filter_spinner.getSelectedItemPosition();
+                int position = filter_spinner.getSelectedItemPosition();
 
-                if (position==0){
-                    choice=Constants.REPRESENTATIVES;
-                }else if (position==1) {
+                if (position == 0){
+                    choice = Constants.REPRESENTATIVES;
+                }else if (position == 1) {
                     choice = Constants.ALLUSERS;
                 }
-                    query=reference.child(choice).orderByChild("name");
+                    query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME);
                 setUpAdapter(query);
                 mFirebaseAdapter.startListening();
                 alertDialog.dismiss();
@@ -190,42 +159,45 @@ public class Members extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         reference = FirebaseDatabase.getInstance().getReference();
         recyclerView = view.findViewById(R.id.recycler_fragment);
-        filter=view.findViewById(R.id.filter);
-//        name_list=new ArrayList<>();
-//        id_map=new HashMap<>();
-//        search_textview=view.findViewById(R.id.search);
-        searchView=view.findViewById(R.id.search_view);
+        filter = view.findViewById(R.id.filter);
+        searchView = view.findViewById(R.id.search_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        query = reference.child(choice).orderByChild("name");
+        query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME);
 
     }
-
-//Todo                 query=reference.orderByChild("name").startAt(search).endAt(search+"\uf8ff");
 
 
     private void setUpAdapter(Query query){
 
 
         final FirebaseRecyclerOptions<Person> options
-                =new FirebaseRecyclerOptions.Builder<Person>()
+                = new FirebaseRecyclerOptions.Builder<Person>()
                 .setQuery(query,Person.class)
                 .build();
 
-        mFirebaseAdapter=new FirebaseRecyclerAdapter<Person,MemberViewHolder>(options){
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<Person,MemberViewHolder>(options){
 
             @Override
             public MemberViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                View view=LayoutInflater.from(parent.getContext())
+                View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.member_row,parent,false);
                 return new MemberViewHolder(view,getContext());
             }
 
             @Override
             protected void onBindViewHolder(@NonNull MemberViewHolder holder, int position, @NonNull final Person model) {
-//                Log.d("MEMBERS:",model.getName());
+
                 holder.name.setText(model.getName());
-                holder.relation.setText(model.getRelation());
+
+                if (model.getWorkingPerson() != null) {
+
+                    holder.work.setText(model.getWorkingPerson().getOccupation());
+
+                }else if (model.getStudyingPerson() != null) {
+
+                    holder.work.setText("Pursuing : " + model.getStudyingPerson().getPursuing());
+                }
 
 
                 Glide.with(getContext())
@@ -234,11 +206,10 @@ public class Members extends Fragment {
                         .into(holder.profile_pic);
 
 
-                holder.mview.setOnClickListener(new View.OnClickListener() {
+                holder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                     //   Toast.makeText(getContext(),model.getName(),Toast.LENGTH_SHORT).show();
-                        Intent profile_intent=new Intent(getActivity(),ProfileActivity.class);
+                        Intent profile_intent = new Intent(getActivity(),ProfileActivity.class);
                         profile_intent.putExtra("UID",model.getID());
                         startActivity(profile_intent);
                     }
@@ -252,152 +223,43 @@ public class Members extends Fragment {
 
 
     }
-//
-//    private void setupFirebaseAdapter() {
-//        Query query=reference.orderByChild("name");
-//        final FirebaseRecyclerOptions<Person> options
-//                =new FirebaseRecyclerOptions.Builder<Person>()
-//                .setQuery(query,Person.class)
-//                .build();
-//        new FetchInfo(options).execute();
-//    }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        if(mFirebaseAdapter!=null)
+        if(mFirebaseAdapter != null)
                 mFirebaseAdapter.startListening();
 
-//        member_ref=FirebaseDatabase.getInstance().getReference("AllUsers");
-//        listener=member_ref.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                       name_list.clear();
-//                       id_map.clear();
-//
-//                       for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//                           String name=snapshot.child("name").getValue(String.class);
-//                           String id=snapshot.getKey();
-//                           name_list.add(name);
-//                           id_map.put(name,id);
-//                       }
-//
-//                        adapter=new ArrayAdapter<String>(getActivity(),
-//                        android.R.layout.simple_spinner_dropdown_item,
-//                        name_list);
-//                        search_textview.setAdapter(adapter);
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
 
     }
 
 
     public static class MemberViewHolder extends RecyclerView.ViewHolder{
 
-
-        View mview;
+        View mView;
         ImageView profile_pic;
-        TextView name,relation;
-
-
+        TextView name,work;
 
         public MemberViewHolder(final View itemView, final Context context) {
             super(itemView);
-            mview=itemView;
+            mView = itemView;
 
-            profile_pic=itemView.findViewById(R.id.profile_image_member_row);
-            name=itemView.findViewById(R.id.member_name_row);
-            relation=itemView.findViewById(R.id.member_Relation_row);
+            profile_pic = itemView.findViewById(R.id.profile_image_member_row);
+            name = itemView.findViewById(R.id.member_name_row);
+            work = itemView.findViewById(R.id.pursuing_occupation);
 
         }
     }
 
 
-    class Fetch extends AsyncTask<Void,Void,Void>{
-        FirebaseRecyclerOptions options;
-        public Fetch(FirebaseRecyclerOptions options) {
-           this.options=options;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog=new ProgressDialog(getActivity());
-            progressDialog.setMessage("Loading...");
-            progressDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            if(firebaseAuth!=null){
-                try {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mFirebaseAdapter=new FirebaseRecyclerAdapter<Person,MemberViewHolder>(options){
-
-                                @Override
-                                public MemberViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                                    View view=LayoutInflater.from(parent.getContext())
-                                            .inflate(R.layout.member_row,parent,false);
-                                    return new MemberViewHolder(view, getContext());
-                                }
-
-                                @Override
-                                protected void onBindViewHolder(@NonNull MemberViewHolder holder, int position, @NonNull Person model) {
-                                    holder.name.setText(model.getName());
-                                    holder.relation.setText(model.getRelation());
-
-                                    Picasso.with(getContext())
-                                            .load(model.getProfile_pic())
-                                            .placeholder(R.drawable.profile)
-                                            .into(holder.profile_pic);
-
-                                }
-                            };
-
-
-
-                        }
-                    });
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            progressDialog.dismiss();
-        }
-    }
 
     @Override
     public void onStop() {
         super.onStop();
-        if(mFirebaseAdapter!=null)
+        if(mFirebaseAdapter != null)
             mFirebaseAdapter.stopListening();
 
-//        if(reference!=null )
-//            reference.removeEventListener(listener);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(thread!=null){
-            thread.interrupt();
-            thread=null;
-        }
-    }
 }
