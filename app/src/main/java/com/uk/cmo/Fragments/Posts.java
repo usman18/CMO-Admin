@@ -37,9 +37,7 @@ public class Posts extends Fragment {
     private final int POSTS_PER_PAGE = 4;
     private FirebaseAuth firebaseAuth;
     private ProgressBar loading_progressbar;
-//    private TextView msg;
     private DatabaseReference reference;
-    //    private FirebaseRecyclerAdapter firebaseRecyclerAdapter;
     private RecyclerView recyclerView;
     private LinearLayoutManager mLinearlayoutmanager;
     private  Query query;
@@ -66,7 +64,6 @@ public class Posts extends Fragment {
         return view;
     }
 
-    //TODO: Infinite Scroll getItemCount= number of items in adapter
     // getChildCount = number of items visible
     // first visible item position = number of scrolled items
     // if visible items + scrolled out items == numberof posts_per pag
@@ -76,16 +73,13 @@ public class Posts extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         reference = FirebaseDatabase.getInstance().getReference(Constants.POSTS);
-//        check_ref=FirebaseDatabase.getInstance().getReference(Constants.USERS);
 
         firebaseAuth = FirebaseAuth.getInstance();
         loading_progressbar = view.findViewById(R.id.loading_progressbar);
-//        msg=view.findViewById(R.id.auth_msg);
         loading_progressbar.setVisibility(View.VISIBLE);
 
         Log.d("RV ","Before Find View By ID");
         recyclerView = view.findViewById(R.id.post_recyclerview);
-//        add_post = view.findViewById(R.id.add_posts);
         recyclerView.setHasFixedSize(true);
         mLinearlayoutmanager = new LinearLayoutManager(getActivity());
         mLinearlayoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -97,8 +91,6 @@ public class Posts extends Fragment {
 
 
         Log.d("RV ","After setting adapter");
-
-
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -115,10 +107,6 @@ public class Posts extends Fragment {
                 int scrolled_items=mLinearlayoutmanager.findFirstVisibleItemPosition();
                 int total_items = mLinearlayoutmanager.getItemCount();
                 int visible=mLinearlayoutmanager.getChildCount();
-
-//                Log.d(" : ",String.valueOf(visible_items));
-//                Log.d("TAG : ",String.valueOf(scrolled_items));
-             //   Log.d("TAG : ", String.valueOf(total_items));
 
                 if (isscrolling && visible+scrolled_items==total_items) {
                     isscrolling=false;

@@ -57,7 +57,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
     private CheckBox checkBox;
     private Uri download_uri;
     public static Person person;
-  //  Boolean isWorking;
+
     String Occupation,Work_Address,Work_contact_num,Work_Email,Qualifications;
     String Pursuing,S_Qualifications;
 
@@ -78,8 +78,8 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     if(checkBox.isChecked()){
 
-                        Work_contact_num=Contact;
-                        Work_Email=Email;
+                        Work_contact_num = Contact;
+                        Work_Email = Email;
                         work_contact_num.setText(Work_contact_num);
                         work_email.setText(Work_Email);
                         work_contact_num.setEnabled(false);
@@ -135,6 +135,8 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
         person.setContact_number(Contact);
         person.setBlood_group(Blood_group);
         person.setMarried(isMarried);
+
+        person.setLegit(false); // by default everyone's legit is false
 
         if(working.isChecked()){
 
@@ -198,9 +200,8 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
                           public void run() {
                               progressBar.setVisibility(View.VISIBLE);
 
-                              //Todo : need to work on random string generation since two pics can have same names
                               StorageReference profile_Reference = storageReference.child("ProfilePics").child(firebaseAuth.getCurrentUser().getUid())
-                                      .child(profile_uri.getLastPathSegment());
+                                      .child(profile_uri.getLastPathSegment() + System.currentTimeMillis());
                               profile_Reference.putFile(profile_uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                   @Override
                                   public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -249,7 +250,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
                             public void run() {
 
                                progressBar.setVisibility(View.VISIBLE);
-                              //  setAllDetails();
+
                                if(profile_uri!=null && download_uri!=null){
                                    person.setProfile_pic(download_uri.toString());
                                }
@@ -270,6 +271,7 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
                                    updateUI();
 
                                }else if(!person.isMember()){
+
 
                                    DatabaseReference representative_ref=databaseReference.child(Constants.REPRESENTATIVES)
                                            .child(person.getID());

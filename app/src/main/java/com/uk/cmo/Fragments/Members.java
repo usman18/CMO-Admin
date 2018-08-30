@@ -82,7 +82,7 @@ public class Members extends Fragment {
             public boolean onQueryTextChange(String newText) {
 
                 query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME)
-                        .startAt(newText).endAt(newText + "\uf8ff");
+                        .startAt(newText.toLowerCase().trim()).endAt(newText.toLowerCase().trim() + "\uf8ff");
                 setUpAdapter(query);
                 mFirebaseAdapter.startListening();
 
@@ -132,7 +132,9 @@ public class Members extends Fragment {
                 }else if (position == 1) {
                     choice = Constants.ALLUSERS;
                 }
-                    query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME);
+
+                query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME);
+
                 setUpAdapter(query);
                 mFirebaseAdapter.startListening();
                 alertDialog.dismiss();

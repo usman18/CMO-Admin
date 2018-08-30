@@ -5,28 +5,33 @@ package com.uk.cmo.Model;
  */
 
 public class Person {
-    //Todo : Use a boolean to identify btw representative or family member
-    // Todo : if representative fetch its family members from MEMBERS node
-    //Todo : if member display relation with representative (along with name of repres)
-    //Todo : For that store Uid of the representative as well and name of representative
-    String name;
-    String name_lower_case;     //will be used for searching
+    private String name;
+    private String name_lower_case;     //will be used for searching
 
-    String email_id;
-    String contact_number;
-    String profile_pic;
-    boolean married;
-    boolean member;
-    String id;
-    String address;
-    String blood_group;
-    String relation;
-    WorkingPerson workingPerson;
-    StudyingPerson studyingPerson;
+    private String email_id;
+    private String contact_number;
+    private String profile_pic;
+    private boolean married;
+    private boolean member;
+    private String id;
+    private String address;
+    private String blood_group;
+    private String relation;
+    private WorkingPerson workingPerson;
+    private StudyingPerson studyingPerson;
+
+    private boolean legit;
 
     public Person() {
     }
 
+    public boolean isLegit() {
+        return legit;
+    }
+
+    public void setLegit(boolean legit) {
+        this.legit = legit;
+    }
 
     public boolean isMarried() {
         return married;

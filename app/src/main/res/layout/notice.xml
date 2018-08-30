@@ -9,10 +9,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp"
-        app:cardElevation="2dp"
-        android:elevation="@dimen/cardview_compat_inset_shadow"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        app:cardElevation="4dp"
         app:cardCornerRadius="8dp"
         >
 

@@ -81,33 +81,6 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-
-//        check_ref.child(firebaseAuth.getCurrentUser().getUid())
-//        .addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                CreatedUser user = dataSnapshot.getValue(CreatedUser.class);
-//                if (user != null) {
-//                    if (!user.isLegit()){
-//                        tabLayout.setVisibility(View.GONE);
-//                        msg.setVisibility(View.VISIBLE);
-//                        add_post.setVisibility(View.INVISIBLE);
-//                    }else {
-//                        subscribeToPosts();
-//                        viewPager.setAdapter(viewPagerAdapter);
-//                        initializeToken();
-//                    }
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-
         add_post = findViewById(R.id.add_posts);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
@@ -168,7 +141,6 @@ public class MainScreenActivity extends AppCompatActivity {
             Log.d("TAG", "user null in method due to some reason");
 
     }
-
 
 
 

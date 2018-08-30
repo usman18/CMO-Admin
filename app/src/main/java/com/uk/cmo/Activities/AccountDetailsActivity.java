@@ -131,7 +131,6 @@ public class AccountDetailsActivity extends AppCompatActivity implements Compoun
             isMarried=true;
         else if(unmarried.isChecked() && !married.isChecked())
             isMarried=false;
-        //work on Spinner
 
         Blood_group=bloodgroup_spinner.getSelectedItem().toString().trim();
         Address=address.getText().toString().trim();

@@ -35,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="italic"
-            android:text="Brother"
             android:layout_alignStart="@id/member_name_row"
             android:layout_below="@id/member_name_row"
             android:id="@+id/pursuing_occupation"
