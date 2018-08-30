@@ -49,7 +49,6 @@ public class MainScreenActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         firebaseAuth = FirebaseAuth.getInstance();
         check_ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(firebaseAuth.getCurrentUser().getUid());
 
@@ -63,6 +62,7 @@ public class MainScreenActivity extends AppCompatActivity {
                         tabLayout.setVisibility(View.GONE);
                         msg.setVisibility(View.VISIBLE);
                         add_post.setVisibility(View.INVISIBLE);
+                        viewPager.setAdapter(null);
                     } else {
                         subscribeToPosts();
                         viewPager.setAdapter(viewPagerAdapter);
