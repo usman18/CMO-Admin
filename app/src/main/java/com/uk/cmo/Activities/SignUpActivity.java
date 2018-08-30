@@ -20,11 +20,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.uk.cmo.Model.CreatedUser;
 import com.uk.cmo.R;
+import com.uk.cmo.Utility.Constants;
 
-public class CreateAccountActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private DatabaseReference reference;
-    private Thread Create_Thread,SigninThread;
+    private Thread createThread,SigninThread;
     private ProgressBar progressBar;
     private EditText email,pwd,full_name;
     private Button create;
@@ -36,22 +37,22 @@ public class CreateAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create__account);
 
-        reference=FirebaseDatabase.getInstance().getReference("Users");
-        firebaseAuth=FirebaseAuth.getInstance();
-        email=findViewById(R.id.email_id);
-        full_name=findViewById(R.id.representative_name_id);
-        pwd=findViewById(R.id.password_id);
-        progressBar=findViewById(R.id.create_progressBar);
-        create=findViewById(R.id.create);
+        reference = FirebaseDatabase.getInstance().getReference(Constants.USERS);
+        firebaseAuth = FirebaseAuth.getInstance();
+        email = findViewById(R.id.email_id);
+        full_name = findViewById(R.id.representative_name_id);
+        pwd = findViewById(R.id.password_id);
+        progressBar = findViewById(R.id.create_progressBar);
+        create = findViewById(R.id.create);
         create.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                name=full_name.getText().toString().trim();
-                Email=email.getText().toString().trim();
-                Pwd=pwd.getText().toString().trim();
+                name = full_name.getText().toString().trim();
+                Email = email.getText().toString().trim();
+                Pwd = pwd.getText().toString().trim();
 
                 if(!TextUtils.isEmpty(name) && !TextUtils.isEmpty(Email) && !TextUtils.isEmpty(Pwd)) {
-                    Create(name, Email, Pwd);
+                    createUser(name, Email, Pwd);
                 }else {
                     Toast.makeText(getApplicationContext(),"Please fill in all the details ! ",Toast.LENGTH_LONG).show();
                 }
@@ -59,15 +60,17 @@ public class CreateAccountActivity extends AppCompatActivity {
         });
     }
 
-    private void Create(final String name, final String email, final String pwd) {
-        Disable_Widgets();
-        Create_Thread=new Thread(){
+    private void createUser(final String name, final String email, final String pwd) {
+
+        disableWidgets();
+
+        createThread = new Thread(){
             @Override
             public void run() {
                 super.run();
-                if(firebaseAuth!=null){
+                if(firebaseAuth != null){
                     try {
-                        Create_Thread.sleep(500);
+                        createThread.sleep(500);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -77,12 +80,13 @@ public class CreateAccountActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if(task.isSuccessful()){
 
-                                            CreatedUser user=new CreatedUser(name,email,false,false);
-                                            DatabaseReference databaseReference=reference.child(firebaseAuth.getCurrentUser().getUid());
-                                            databaseReference.setValue(user);
+                                            String uid = firebaseAuth.getCurrentUser().getUid();
+
+                                            CreatedUser user = new CreatedUser(name,email,uid,false);
+                                            reference.child(uid).setValue(user);
 
                                             progressBar.setVisibility(View.INVISIBLE);
-                                            SignIn_Thread(email,pwd);
+                                            signInUser(email,pwd);
 
                                         }else {
 
@@ -91,7 +95,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onFailure(@NonNull Exception e) {
                                                             progressBar.setVisibility(View.INVISIBLE);
-                                                            Enable_Widgets();
+                                                            enableWidgets();
                                                             Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                                                         }
                                                     });
@@ -109,15 +113,15 @@ public class CreateAccountActivity extends AppCompatActivity {
             }
         };
 
-        Create_Thread.start();
+        createThread.start();
     }
 
-    private void SignIn_Thread(final String email, final String pwd) {
+    private void signInUser(final String email, final String pwd) {
        SigninThread=new Thread(){
            @Override
            public void run() {
                super.run();
-               if(firebaseAuth!=null){
+               if(firebaseAuth != null){
                    try {
                        SigninThread.sleep(500);
                        runOnUiThread(new Runnable() {
@@ -131,14 +135,14 @@ public class CreateAccountActivity extends AppCompatActivity {
 
                                             progressBar.setVisibility(View.INVISIBLE);
 
-                                            Intent details_intent=new Intent(CreateAccountActivity.this,AccountDetailsActivity.class);
+                                            Intent details_intent=new Intent(SignUpActivity.this,AccountDetailsActivity.class);
                                             details_intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                             startActivity(details_intent);
 
                                         }else {
 
                                             progressBar.setVisibility(View.INVISIBLE);
-                                            Enable_Widgets();
+                                            enableWidgets();
                                             Toast.makeText(getApplicationContext(),"Sign In Not Successful ! ",Toast.LENGTH_LONG).show();
 
                                         }
@@ -155,13 +159,13 @@ public class CreateAccountActivity extends AppCompatActivity {
        SigninThread.start();
     }
 
-    private void Disable_Widgets() {
+    private void disableWidgets() {
         email.setEnabled(false);
         full_name.setEnabled(false);
         pwd.setEnabled(false);
     }
 
-    private void Enable_Widgets(){
+    private void enableWidgets(){
         email.setEnabled(true);
         full_name.setEnabled(true);
         pwd.setEnabled(true);
@@ -170,9 +174,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(Create_Thread!=null){
-            Create_Thread.interrupt();
-            Create_Thread=null;
+        if(createThread !=null){
+            createThread.interrupt();
+            createThread =null;
         }
         if(SigninThread!=null){
             SigninThread.interrupt();

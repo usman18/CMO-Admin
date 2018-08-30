@@ -28,28 +28,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.uk.cmo.Activities.ProfileActivity;
 import com.uk.cmo.Model.Person;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Constants;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 /**
  * Created by usman on 22-02-2018.
  */
 
 public class Members extends Fragment {
-    private ArrayList<String> name_list;
-    private HashMap<String,String> id_map;
     private RecyclerView recyclerView;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
     private FirebaseRecyclerAdapter mFirebaseAdapter;
-    private ValueEventListener listener;
     private SearchView searchView;
     private ImageView filter;
     private DatabaseReference reference;

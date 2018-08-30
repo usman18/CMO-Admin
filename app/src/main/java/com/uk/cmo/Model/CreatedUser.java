@@ -5,12 +5,12 @@ package com.uk.cmo.Model;
  */
 
 public class CreatedUser {
+
+    String uid;
     String full_name,user_name;
     boolean accountsetup;
-    boolean membersetup;
     boolean legit;   //getters and setter will be added for this once admin signup is included
     String token;
-
 
     public CreatedUser() {
 
@@ -24,11 +24,11 @@ public class CreatedUser {
         this.token = token;
     }
 
-    public CreatedUser(String full_name, String user_name, boolean accountsetup, boolean membersetup) {
+    public CreatedUser(String full_name, String user_name,String uid, boolean accountsetup) {
         this.full_name = full_name;
         this.user_name = user_name;
+        this.uid = uid;
         this.accountsetup = accountsetup;
-        this.membersetup=membersetup;
     }
 
     public boolean isLegit() {
@@ -39,14 +39,6 @@ public class CreatedUser {
         this.legit = legit;
     }
 
-
-    public boolean isMembersetup() {
-        return membersetup;
-    }
-
-    public void setMembersetup(boolean membersetup) {
-        this.membersetup = membersetup;
-    }
 
     public boolean isAccountsetup() {
         return accountsetup;

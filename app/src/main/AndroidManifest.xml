@@ -45,7 +45,7 @@
         <activity android:name=".Activities.MainScreenActivity"
             android:theme="@style/MyCustomTabLayout"
             />
-        <activity android:name=".Activities.CreateAccountActivity" />
+        <activity android:name=".Activities.SignUpActivity" />
         <activity android:name=".Activities.AccountDetailsActivity" />
         <activity android:name=".Activities.ProfessionalDetailsActivity" />
         <activity

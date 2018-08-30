@@ -148,6 +148,7 @@ public class AccountDetailsActivity extends AppCompatActivity implements Compoun
                 profile_pic.setImageURI(resultUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
             }
         }
     }

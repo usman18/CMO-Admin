@@ -51,26 +51,28 @@ public class MainScreenActivity extends AppCompatActivity {
 
 
         firebaseAuth = FirebaseAuth.getInstance();
-        check_ref = FirebaseDatabase.getInstance().getReference(Constants.USERS);
+        check_ref = FirebaseDatabase.getInstance().getReference(Constants.USERS).child(firebaseAuth.getCurrentUser().getUid());
 
-
-        check_ref.child(firebaseAuth.getCurrentUser().getUid())
-        .addListenerForSingleValueEvent(new ValueEventListener() {
+        check_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 CreatedUser user = dataSnapshot.getValue(CreatedUser.class);
                 if (user != null) {
-                    if (!user.isLegit()){
+                    Log.d("Check",String.valueOf(user.isLegit()));
+                    if (!user.isLegit()) {
                         tabLayout.setVisibility(View.GONE);
                         msg.setVisibility(View.VISIBLE);
                         add_post.setVisibility(View.INVISIBLE);
-                    }else {
+                    } else {
                         subscribeToPosts();
                         viewPager.setAdapter(viewPagerAdapter);
+                        tabLayout.setVisibility(View.VISIBLE);
+                        msg.setVisibility(View.INVISIBLE);
+                        add_post.setVisibility(View.VISIBLE);
                         initializeToken();
                     }
-                }
 
+                }
             }
 
             @Override
@@ -78,6 +80,32 @@ public class MainScreenActivity extends AppCompatActivity {
 
             }
         });
+
+
+//        check_ref.child(firebaseAuth.getCurrentUser().getUid())
+//        .addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                CreatedUser user = dataSnapshot.getValue(CreatedUser.class);
+//                if (user != null) {
+//                    if (!user.isLegit()){
+//                        tabLayout.setVisibility(View.GONE);
+//                        msg.setVisibility(View.VISIBLE);
+//                        add_post.setVisibility(View.INVISIBLE);
+//                    }else {
+//                        subscribeToPosts();
+//                        viewPager.setAdapter(viewPagerAdapter);
+//                        initializeToken();
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
 
 
         add_post = findViewById(R.id.add_posts);

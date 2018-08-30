@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 //intent to create account
-                Intent intent=new Intent(MainActivity.this,CreateAccountActivity.class);
+                Intent intent=new Intent(MainActivity.this,SignUpActivity.class);
                 startActivity(intent);
                 break;
 
