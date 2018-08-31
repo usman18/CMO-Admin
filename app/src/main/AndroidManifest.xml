@@ -18,33 +18,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <service
-            android:name=".Utility.MessagingService"
-            >
+        <service android:name=".Utility.MessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
-        <service android:name=".Utility.InstanceIDService"
-            >
+        <service android:name=".Utility.InstanceIDService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
 
         <activity android:name=".Activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
-        <activity android:name=".Activities.MainScreenActivity"
-            android:theme="@style/MyCustomTabLayout"
-            />
+        <activity
+            android:name=".Activities.MainScreenActivity"
+            android:theme="@style/MyCustomTabLayout" />
         <activity android:name=".Activities.SignUpActivity" />
         <activity android:name=".Activities.AccountDetailsActivity" />
         <activity android:name=".Activities.ProfessionalDetailsActivity" />
@@ -53,21 +47,31 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Activities.FamilyMember" />
         <activity android:name=".Activities.AddPostActivity" />
-        <activity android:name=".Activities.ProfileActivity"
-            android:theme="@style/ProfileTheme"
-            ></activity>
+        <activity
+            android:name=".Activities.ProfileActivity"
+            android:theme="@style/ProfileTheme" />
+
         <receiver
             android:name=".Utility.NotificationReciever"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </receiver>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
+        <activity android:name=".Activities.MyProfileActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>

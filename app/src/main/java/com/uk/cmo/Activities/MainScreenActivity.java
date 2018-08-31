@@ -107,18 +107,24 @@ public class MainScreenActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.post_options,menu);
+        inflater.inflate(R.menu.menu_options,menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+
+            case R.id.profile:
+                startActivity(new Intent(MainScreenActivity.this,MyProfileActivity.class));
+                break;
+
             case R.id.sign_out:
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.POSTS);
                 firebaseAuth.signOut();
                 startActivity(new Intent(MainScreenActivity.this, MainActivity.class));
                 finish();
+
         }
 
         return super.onOptionsItemSelected(item);

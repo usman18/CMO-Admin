@@ -8,9 +8,11 @@ public class CreatedUser {
 
     String uid;
     String full_name,user_name;
+    String token;
     boolean accountsetup;
     boolean legit;   //getters and setter will be added for this once admin signup is included
-    String token;
+
+
 
     public CreatedUser() {
 
