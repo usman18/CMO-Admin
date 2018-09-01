@@ -109,11 +109,10 @@
 
                     <EditText
                         android:id="@+id/et_personal_mail"
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         android:layout_gravity="center"
-                        android:textColor="#050505"
                         android:layout_weight="1"
                         android:padding="8dp"
                         android:textSize="14sp"
@@ -153,19 +152,18 @@
 
                     <EditText
                         android:id="@+id/et_personal_number"
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         android:layout_gravity="center"
-                        android:textColor="#050505"
                         android:layout_weight="1"
                         android:padding="8dp"
                         android:textSize="14sp"
                         android:background="@drawable/round_edittext"
                         />
 
-
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -187,7 +185,7 @@
 
                     <TextView
                         android:id="@+id/personal_address"
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
@@ -197,17 +195,15 @@
 
                     <EditText
                         android:id="@+id/et_personal_address"
-                        android:layout_width="80dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="gone"
                         android:layout_gravity="center"
-                        android:textColor="#050505"
                         android:layout_weight="1"
                         android:padding="8dp"
                         android:textSize="14sp"
                         android:background="@drawable/round_edittext"
                         />
-
 
                 </LinearLayout>
 
@@ -364,6 +360,17 @@
                         android:layout_weight="1"
                         />
 
+                    <EditText
+                        android:id="@+id/et_pro_occ_pursuing"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/round_edittext"
+                        />
 
                 </LinearLayout>
 
@@ -398,6 +405,18 @@
                         android:textSize="16sp"
                         android:textColor="#050505"
                         android:layout_weight="1"
+                        />
+
+                    <EditText
+                        android:id="@+id/et_pro_quali"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/round_edittext"
                         />
 
 
@@ -436,6 +455,18 @@
                         android:textColor="#050505"
                         android:textSize="16sp" />
 
+                    <EditText
+                        android:id="@+id/et_pro_mail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/round_edittext"
+                        />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -470,6 +501,18 @@
                         android:textColor="#050505"
                         android:textSize="16sp" />
 
+                    <EditText
+                        android:id="@+id/et_pro_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/round_edittext"
+                        />
+
                 </LinearLayout>
                 <LinearLayout
                     android:orientation="horizontal"
@@ -502,6 +545,18 @@
                         android:textAlignment="center"
                         android:textColor="#050505"
                         android:textSize="16sp" />
+
+                    <EditText
+                        android:id="@+id/et_pro_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:padding="8dp"
+                        android:textSize="14sp"
+                        android:background="@drawable/round_edittext"
+                        />
 
                 </LinearLayout>
 
