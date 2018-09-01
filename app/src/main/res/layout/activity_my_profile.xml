@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:id="@+id/profile_layout"
             >
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -64,9 +65,10 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
                         android:text="Personal Details"
                         android:textColor="@color/colorPrimaryDark"
@@ -74,8 +76,9 @@
 
                     <ImageView
                         android:id="@+id/edit_personal_details"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:background="@drawable/ic_action_edit"
                         android:layout_margin="8dp"
                         />
@@ -100,7 +103,7 @@
 
                     <TextView
                         android:id="@+id/personal_mail"
-                        android:layout_width="80dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
@@ -143,7 +146,7 @@
 
                     <TextView
                         android:id="@+id/personal_number"
-                        android:layout_width="80dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
@@ -186,7 +189,7 @@
 
                     <TextView
                         android:id="@+id/personal_address"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
@@ -238,13 +241,17 @@
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:layout_gravity="center"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textColor="#050505"
                         android:textSize="15sp"
                         android:text=""
                         android:textAlignment="center"
                         />
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"></RadioGroup>
 
                 </LinearLayout>
 
@@ -278,7 +285,7 @@
                         android:id="@+id/personal_blood_group"
                         android:layout_marginStart="8dp"
                         android:layout_weight="1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:textColor="#050505"
                         android:textSize="15sp"
@@ -317,18 +324,20 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:layout_weight="1"
+                        android:layout_gravity="center"
                         android:text="Professional Details"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="16sp" />
 
                     <ImageView
                         android:id="@+id/edit_professional_details"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
                         android:background="@drawable/ic_action_edit"
                         android:layout_margin="8dp"
                         />
@@ -345,13 +354,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/allerta"
+                        android:layout_gravity="center"
                         android:text="Occupation : "
                         android:textColor="#050505"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tv_occupation_or_pursuing"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="Doctor"
                         android:textAlignment="center"
@@ -394,11 +404,12 @@
                         android:fontFamily="@font/allerta"
                         android:text="Qualification : "
                         android:textStyle="bold"
+                        android:layout_gravity="center"
                         android:textColor="#050505" />
 
                     <TextView
                         android:id="@+id/tv_qualification"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="MBBS"
                         android:textAlignment="center"
