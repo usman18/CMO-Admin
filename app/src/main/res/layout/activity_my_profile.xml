@@ -250,8 +250,29 @@
                         />
 
                     <RadioGroup
+                        android:id="@+id/marital_rg"
+                        android:orientation="vertical"
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"></RadioGroup>
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/rb_married"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Married"
+                            />
+
+                        <RadioButton
+                            android:id="@+id/rb_unmarried"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unmarried"
+                            />
+
+
+
+                    </RadioGroup>
 
                 </LinearLayout>
 

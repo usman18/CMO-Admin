@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -43,6 +45,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     private EditText et_number;         // Todo : make input type as number
     private EditText et_address;
 
+    private RadioGroup radioGroup;
+    private RadioButton rb_married;
+    private RadioButton rb_unmarried;
+
     //ETs for Professional Details
     private EditText et_pro_mail;
     private EditText et_pro_number;     //Todo : make input type as number
@@ -61,6 +67,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     private ImageView img_profile_image;
 
     private FirebaseAuth mAuth;
+
+    private Person person;
 
 
     @Override
@@ -91,7 +99,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Person person = dataSnapshot.getValue(Person.class);
+                person = dataSnapshot.getValue(Person.class);
 
                 if (person != null)
                     getSupportActionBar().setTitle(person.getName());
@@ -109,7 +117,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 if (person.isMarried()){
                     tv_marrital_status.setText("Married");
                 }else {
-                    tv_marrital_status.setText("Unmaried");
+                    tv_marrital_status.setText("Unmarried");
                 }
 
                 tv_blood_group.setText(person.getBlood_group());
@@ -125,7 +133,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     findViewById(R.id.ll5).setVisibility(View.VISIBLE);
                     findViewById(R.id.ll6).setVisibility(View.VISIBLE);
 
-
                     tv_occupation.setText(workingPerson.getOccupation());
                     tv_quali.setText(workingPerson.getQualifications());
                     tv_pro_number.setText(workingPerson.getWorkplace_contact_num());
@@ -140,7 +147,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     tv_quali.setText(studyingPerson.getQualification());
 
                     TextView tv = findViewById(R.id.text_occupation);
-                    tv.setText("Pursuing");
+                    tv.setText("Pursuing : ");
 
                     findViewById(R.id.ll1).setVisibility(View.GONE);
                     findViewById(R.id.ll2).setVisibility(View.GONE);
@@ -179,6 +186,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         et_number = findViewById(R.id.et_personal_number);
         et_address = findViewById(R.id.et_personal_address);
 
+        radioGroup = findViewById(R.id.marital_rg);
+        rb_married = findViewById(R.id.rb_married);
+        rb_unmarried = findViewById(R.id.rb_unmarried);
+
 
         img_edit_personal = findViewById(R.id.edit_personal_details);
         img_edit_professional = findViewById(R.id.edit_professional_details);
@@ -214,6 +225,20 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             et_mail.setVisibility(View.VISIBLE);
             et_number.setVisibility(View.VISIBLE);
             et_address.setVisibility(View.VISIBLE);
+            radioGroup.setVisibility(View.VISIBLE);
+
+            et_mail.setText(tv_mail.getText().toString());
+            et_number.setText(tv_number.getText().toString());
+            et_address.setText(tv_address.getText().toString());
+
+            if (person.isMarried()){
+                rb_married.setChecked(true);
+                rb_unmarried.setChecked(false);
+            }else {
+                rb_unmarried.setChecked(true);
+                rb_married.setChecked(false);
+            }
+
 
             img_edit_personal.setBackground(getResources().getDrawable(R.drawable.ic_action_save));
 
@@ -228,13 +253,23 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             et_mail.setVisibility(View.GONE);
             et_number.setVisibility(View.GONE);
             et_address.setVisibility(View.GONE);
+            radioGroup.setVisibility(View.GONE);
+
+            tv_mail.setText(et_mail.getText().toString());
+            tv_number.setText(et_number.getText().toString());
+            tv_address.setText(et_address.getText().toString());
+            if (rb_married.isChecked()){
+                tv_marrital_status.setText("Married");
+            }else {
+                tv_marrital_status.setText("Unmarried");
+            }
+
 
             img_edit_personal.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
 
         }
 
     }
-
 
     private void updateProfessionalWidgets(boolean status) {
 
@@ -252,6 +287,12 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             et_occupation.setVisibility(View.VISIBLE);
             et_quali.setVisibility(View.VISIBLE);
 
+            et_pro_mail.setText(tv_pro_mail.getText().toString());
+            et_pro_number.setText(tv_pro_number.getText().toString());
+            et_pro_address.setText(tv_pro_address.getText().toString());
+            et_quali.setText(tv_quali.getText().toString());
+            et_occupation.setText(tv_occupation.getText().toString());
+
             img_edit_professional.setBackground(getResources().getDrawable(R.drawable.ic_action_save));
 
         } else {
@@ -267,6 +308,12 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             et_pro_address.setVisibility(View.GONE);
             et_quali.setVisibility(View.GONE);
             et_occupation.setVisibility(View.GONE);
+
+            tv_pro_mail.setText(et_pro_mail.getText().toString());
+            tv_pro_number.setText(et_pro_number.getText().toString());
+            tv_pro_address.setText(et_pro_address.getText().toString());
+            tv_quali.setText(et_quali.getText().toString());
+            tv_occupation.setText(et_occupation.getText().toString());
 
             img_edit_professional.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
 
