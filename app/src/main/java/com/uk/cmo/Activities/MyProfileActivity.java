@@ -123,6 +123,40 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+
+    private void updateProfessionalWidgets(boolean status) {
+
+        if (status) {
+
+            tv_pro_mail.setVisibility(View.GONE);
+            tv_pro_number.setVisibility(View.GONE);
+            tv_pro_address.setVisibility(View.GONE);
+            tv_occupation.setVisibility(View.GONE);
+            tv_quali.setVisibility(View.GONE);
+
+            et_pro_mail.setVisibility(View.VISIBLE);
+            et_pro_number.setVisibility(View.VISIBLE);
+            et_pro_address.setVisibility(View.VISIBLE);
+
+            img_edit_professional.setBackground(getResources().getDrawable(R.drawable.ic_action_save));
+
+        } else {
+
+            tv_pro_mail.setVisibility(View.VISIBLE);
+            tv_pro_number.setVisibility(View.VISIBLE);
+            tv_pro_address.setVisibility(View.VISIBLE);
+            tv_occupation.setVisibility(View.VISIBLE);
+            tv_quali.setVisibility(View.VISIBLE);
+
+            et_pro_mail.setVisibility(View.GONE);
+            et_pro_number.setVisibility(View.GONE);
+            et_pro_address.setVisibility(View.GONE);
+
+            img_edit_professional.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
+
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -132,7 +166,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.edit_professional_details:
-                //Todo : Logic comes here
+                updateProfessionalWidgets(professional_edit = !professional_edit);
         }
     }
 }
