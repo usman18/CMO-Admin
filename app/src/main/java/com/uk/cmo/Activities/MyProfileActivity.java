@@ -1,9 +1,12 @@
 package com.uk.cmo.Activities;
 
+import android.animation.LayoutTransition;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -31,7 +34,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     private TextView tv_mail;
     private TextView tv_number;
     private TextView tv_address;
-    private TextView tv_marrital_status;
+    private TextView tv_marital_status;
     private TextView tv_blood_group;
 
     //TVs for Professional Details
@@ -91,6 +94,53 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
 
     }
+    private void initialize() {
+
+        mAuth = FirebaseAuth.getInstance();
+
+        ((ViewGroup) findViewById(R.id.root_layout))
+                .getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+
+        img_profile_image = findViewById(R.id.profile_pic);
+
+        //Personal Details widgets
+        tv_mail = findViewById(R.id.personal_mail);
+        tv_number = findViewById(R.id.personal_number);
+        tv_address = findViewById(R.id.personal_address);
+        tv_marital_status = findViewById(R.id.personal_marital_status);
+        tv_blood_group = findViewById(R.id.personal_blood_group);
+
+        et_mail = findViewById(R.id.et_personal_mail);
+        et_number = findViewById(R.id.et_personal_number);
+        et_address = findViewById(R.id.et_personal_address);
+
+        radioGroup = findViewById(R.id.marital_rg);
+        rb_married = findViewById(R.id.rb_married);
+        rb_unmarried = findViewById(R.id.rb_unmarried);
+
+        sp_blood_group = findViewById(R.id.sp_blood_group);
+
+        img_edit_personal = findViewById(R.id.edit_personal_details);
+        img_edit_professional = findViewById(R.id.edit_professional_details);
+
+        img_edit_personal.setOnClickListener(this);
+        img_edit_professional.setOnClickListener(this);
+
+        //Professional Details Widgets
+        tv_pro_mail = findViewById(R.id.tv_proffesional_email);
+        tv_pro_number = findViewById(R.id.tv_proffesional_number);
+        tv_pro_address = findViewById(R.id.tv_proffesional_address);
+        tv_occupation = findViewById(R.id.tv_occupation_or_pursuing);
+        tv_quali = findViewById(R.id.tv_qualification);
+
+        et_pro_mail = findViewById(R.id.et_pro_mail);
+        et_pro_number = findViewById(R.id.et_pro_number);
+        et_pro_address = findViewById(R.id.et_pro_address);
+        et_occupation = findViewById(R.id.et_pro_occ_pursuing);
+        et_qualification = findViewById(R.id.et_pro_quali);
+
+    }
+
 
     private void getUserDetails() {
 
@@ -118,9 +168,9 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 tv_address.setText(person.getAddress());
 
                 if (person.isMarried()){
-                    tv_marrital_status.setText("Married");
+                    tv_marital_status.setText("Married");
                 }else {
-                    tv_marrital_status.setText("Unmarried");
+                    tv_marital_status.setText("Unmarried");
                 }
 
                 tv_blood_group.setText(person.getBlood_group());
@@ -172,49 +222,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void initialize() {
-
-        mAuth = FirebaseAuth.getInstance();
-
-        img_profile_image = findViewById(R.id.profile_pic);
-
-        //Personal Details widgets
-        tv_mail = findViewById(R.id.personal_mail);
-        tv_number = findViewById(R.id.personal_number);
-        tv_address = findViewById(R.id.personal_address);
-        tv_marrital_status = findViewById(R.id.personal_marital_status);
-        tv_blood_group = findViewById(R.id.personal_blood_group);
-
-        et_mail = findViewById(R.id.et_personal_mail);
-        et_number = findViewById(R.id.et_personal_number);
-        et_address = findViewById(R.id.et_personal_address);
-
-        radioGroup = findViewById(R.id.marital_rg);
-        rb_married = findViewById(R.id.rb_married);
-        rb_unmarried = findViewById(R.id.rb_unmarried);
-
-        sp_blood_group = findViewById(R.id.sp_blood_group);
-
-        img_edit_personal = findViewById(R.id.edit_personal_details);
-        img_edit_professional = findViewById(R.id.edit_professional_details);
-
-        img_edit_personal.setOnClickListener(this);
-        img_edit_professional.setOnClickListener(this);
-
-        //Professional Details Widgets
-        tv_pro_mail = findViewById(R.id.tv_proffesional_email);
-        tv_pro_number = findViewById(R.id.tv_proffesional_number);
-        tv_pro_address = findViewById(R.id.tv_proffesional_address);
-        tv_occupation = findViewById(R.id.tv_occupation_or_pursuing);
-        tv_quali = findViewById(R.id.tv_qualification);
-
-        et_pro_mail = findViewById(R.id.et_pro_mail);
-        et_pro_number = findViewById(R.id.et_pro_number);
-        et_pro_address = findViewById(R.id.et_pro_address);
-        et_occupation = findViewById(R.id.et_pro_occ_pursuing);
-        et_qualification = findViewById(R.id.et_pro_quali);
-
-    }
 
     private void updatePersonalWidgets(boolean status) {
 
@@ -223,7 +230,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             tv_mail.setVisibility(View.GONE);
             tv_number.setVisibility(View.GONE);
             tv_address.setVisibility(View.GONE);
-            tv_marrital_status.setVisibility(View.GONE);
+            tv_marital_status.setVisibility(View.GONE);
             tv_blood_group.setVisibility(View.GONE);
 
             et_mail.setVisibility(View.VISIBLE);
@@ -235,14 +242,21 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             et_mail.setText(tv_mail.getText().toString());
             et_number.setText(tv_number.getText().toString());
             et_address.setText(tv_address.getText().toString());
+
             if (person.isMarried()){
                 rb_married.setChecked(true);
-                rb_unmarried.setChecked(false);
             }else {
                 rb_unmarried.setChecked(true);
-                rb_married.setChecked(false);
             }
-            //Todo : Spinner
+
+            int position = Constants.blood_groups.indexOf(person.getBlood_group());
+
+            if (position != -1){
+
+                sp_blood_group.setSelection(position);
+
+            }
+
 
             img_edit_personal.setBackground(getResources().getDrawable(R.drawable.ic_action_save));
 
@@ -251,7 +265,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             tv_mail.setVisibility(View.VISIBLE);
             tv_number.setVisibility(View.VISIBLE);
             tv_address.setVisibility(View.VISIBLE);
-            tv_marrital_status.setVisibility(View.VISIBLE);
+            tv_marital_status.setVisibility(View.VISIBLE);
             tv_blood_group.setVisibility(View.VISIBLE);
 
             et_mail.setVisibility(View.GONE);
@@ -260,20 +274,46 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             radioGroup.setVisibility(View.GONE);
             sp_blood_group.setVisibility(View.GONE);
 
-            tv_mail.setText(et_mail.getText().toString());
-            tv_number.setText(et_number.getText().toString());
-            tv_address.setText(et_address.getText().toString());
-            if (rb_married.isChecked()){
-                tv_marrital_status.setText("Married");
+            //update data in person obj
+            person.setEmail_id(et_mail.getText().toString());
+            person.setContact_number(et_number.getText().toString());
+            person.setAddress(et_address.getText().toString());
+
+            if (rb_married.isChecked()) {
+                person.setMarried(true);
             }else {
-                tv_marrital_status.setText("Unmarried");
+                person.setMarried(false);
             }
-            tv_blood_group.setText(sp_blood_group.getSelectedItem().toString());
+
+            person.setBlood_group(sp_blood_group.getSelectedItem().toString());
+
+            //Updating UI accordingly
+            tv_mail.setText(person.getEmail_id());
+            tv_number.setText(person.getContact_number());
+            tv_address.setText(person.getAddress());
+            if (person.isMarried()){
+                tv_marital_status.setText("Married");
+            }else {
+                tv_marital_status.setText("Unmarried");
+            }
+            tv_blood_group.setText(person.getBlood_group());
 
             img_edit_personal.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
 
+            updateDb();
+
         }
 
+    }
+
+    private void updateDb() {
+
+        FirebaseDatabase.getInstance().getReference(Constants.REPRESENTATIVES)
+                .child(mAuth.getCurrentUser().getUid())
+                .setValue(person);
+
+        Snackbar.make(findViewById(R.id.root_layout),"Details Updated",Snackbar.LENGTH_SHORT)
+                .show();
     }
 
     private void updateProfessionalWidgets(boolean status) {

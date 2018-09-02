@@ -1,11 +1,17 @@
 package com.uk.cmo.Utility;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by usman on 25-04-2018.
  */
 
 public class Constants {
 
+    //Do not change the position of elements in the below array
+    public static final ArrayList<String> blood_groups
+            = new ArrayList<>(Arrays.asList("A+","A-","B+","B-","AB+","AB-","O+","O-"));
 
     //Nodes
     public static final String USERS = "Users";
