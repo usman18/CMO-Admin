@@ -1,7 +1,11 @@
 package com.uk.cmo.Activities;
 
 import android.animation.LayoutTransition;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,15 +17,23 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 import com.uk.cmo.Model.Person;
 import com.uk.cmo.Model.StudyingPerson;
 import com.uk.cmo.Model.WorkingPerson;
@@ -76,6 +88,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     private Person person;
 
+   ProgressDialog dialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +108,18 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
 
     }
+
+
     private void initialize() {
 
         mAuth = FirebaseAuth.getInstance();
 
         ((ViewGroup) findViewById(R.id.root_layout))
                 .getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
+        dialog = new ProgressDialog(this);
 
         img_profile_image = findViewById(R.id.profile_pic);
+        findViewById(R.id.camera_layout).setOnClickListener(this);
 
         //Personal Details widgets
         tv_mail = findViewById(R.id.personal_mail);
@@ -141,6 +159,125 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.edit_personal_details:
+                updatePersonalWidgets(personal_edit = !personal_edit);
+                break;
+
+            case R.id.edit_professional_details:
+                updateProfessionalWidgets(professional_edit = !professional_edit);
+                break;
+
+            case R.id.camera_layout:
+                selectImage();
+
+        }
+    }
+
+    private void selectImage() {
+
+        CropImage.activity()
+                .setAspectRatio(1,1)
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(MyProfileActivity.this);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                Uri resultUri = result.getUri();
+                img_profile_image.setImageURI(resultUri);
+                updateStorage(resultUri);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+
+                Exception error = result.getError();
+                Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_SHORT).show();
+
+            }
+        }
+
+
+
+    }
+
+    private void updateStorage(final Uri resultUri) {
+
+        dialog.setMessage("Updating");
+        dialog.setCanceledOnTouchOutside(false);
+
+        final StorageReference reference = FirebaseStorage.getInstance()
+                .getReferenceFromUrl(person.getProfile_pic());
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                dialog.show();
+                reference.delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                updateProfilePic(resultUri);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+
+                                dialog.dismiss();
+                                Toast.makeText(getApplicationContext(),
+                                        "Could not update Profile Pic",Toast.LENGTH_SHORT)
+                                        .show();
+
+                            }
+                        });
+
+            }
+        });
+
+    }
+
+    private void updateProfilePic(final Uri profilePic) {
+
+        StorageReference reference
+                = FirebaseStorage.getInstance().getReference(Constants.PROFILE_PICS)
+                .child(mAuth.getCurrentUser().getUid())
+                .child(profilePic.getLastPathSegment() + System.currentTimeMillis());
+
+        reference.putFile(profilePic)
+                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                        person.setProfile_pic(taskSnapshot.getDownloadUrl().toString());
+                        updateDb();
+                        img_profile_image.setImageURI(profilePic);
+                        Toast.makeText(getApplicationContext()," Profile Pic Updated",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Toast.makeText(getApplicationContext(),"Could not update Profile Pic",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+
+                    }
+                });
+
+    }
 
     private void getUserDetails() {
 
@@ -225,18 +362,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
     }
 
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-
-            case R.id.edit_personal_details:
-                updatePersonalWidgets(personal_edit = !personal_edit);
-                break;
-
-            case R.id.edit_professional_details:
-                updateProfessionalWidgets(professional_edit = !professional_edit);
-        }
-    }
 
 
 
@@ -403,6 +528,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
         Snackbar.make(findViewById(R.id.root_layout),"Details Updated",Snackbar.LENGTH_SHORT)
                 .show();
+
     }
 
 }

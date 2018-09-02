@@ -52,7 +52,7 @@ public class AccountDetailsActivity extends AppCompatActivity implements Compoun
             header_text.setText("Family Member details");
             address.setHint("Enter Relation with representative");
             person.setMember(true);
-           familyMember=false;     //bydefault;
+           familyMember = false;     //bydefault;
         }else {
             person.setMember(false);
         }

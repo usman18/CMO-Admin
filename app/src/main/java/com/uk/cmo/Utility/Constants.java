@@ -40,6 +40,7 @@ public class Constants {
 
     public static final String POST_PICS = "PostPics";
 
+    public static final String PROFILE_PICS = "ProfilePics";
 
 
 }
