@@ -216,35 +216,39 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         dialog.setMessage("Updating");
         dialog.setCanceledOnTouchOutside(false);
 
-        final StorageReference reference = FirebaseStorage.getInstance()
-                .getReferenceFromUrl(person.getProfile_pic());
+        if (person.getProfile_pic() != null) {
+            final StorageReference reference = FirebaseStorage.getInstance()
+                    .getReferenceFromUrl(person.getProfile_pic());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+                    dialog.show();
+                    reference.delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    updateProfilePic(resultUri);
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
 
-                dialog.show();
-                reference.delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                updateProfilePic(resultUri);
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                                    dialog.dismiss();
+                                    Toast.makeText(getApplicationContext(),
+                                            "Could not update Profile Pic", Toast.LENGTH_SHORT)
+                                            .show();
 
-                                dialog.dismiss();
-                                Toast.makeText(getApplicationContext(),
-                                        "Could not update Profile Pic",Toast.LENGTH_SHORT)
-                                        .show();
+                                }
+                            });
 
-                            }
-                        });
-
-            }
-        });
+                }
+            });
+        }else {
+            dialog.show();
+            updateProfilePic(resultUri);
+        }
 
     }
 
@@ -261,9 +265,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                         person.setProfile_pic(taskSnapshot.getDownloadUrl().toString());
-                        updateDb();
+                        updateDb("Profile Pic updated");
                         img_profile_image.setImageURI(profilePic);
-                        Toast.makeText(getApplicationContext()," Profile Pic Updated",Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 })
@@ -442,7 +445,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
             img_edit_personal.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
 
-            updateDb();
+            updateDb("Personal Details updated !");
 
         }
 
@@ -515,18 +518,18 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
             img_edit_professional.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
 
-            updateDb();
+            updateDb("Professional Details updated !");
 
         }
     }
 
-    private void updateDb() {
+    private void updateDb(String msg) {
 
         FirebaseDatabase.getInstance().getReference(Constants.REPRESENTATIVES)
                 .child(mAuth.getCurrentUser().getUid())
                 .setValue(person);
 
-        Snackbar.make(findViewById(R.id.root_layout),"Details Updated",Snackbar.LENGTH_SHORT)
+        Snackbar.make(findViewById(R.id.root_layout),msg,Snackbar.LENGTH_SHORT)
                 .show();
 
     }
