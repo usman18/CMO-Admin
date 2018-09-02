@@ -196,6 +196,8 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 }else if (person.getStudyingPerson() != null){
 
                     StudyingPerson studyingPerson = person.getStudyingPerson();
+
+                    //Occupation is being used to display pursuing for studying person
                     tv_occupation.setText(studyingPerson.getPursuing());
                     tv_quali.setText(studyingPerson.getQualification());
 
@@ -221,6 +223,21 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         });
 
     }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.edit_personal_details:
+                updatePersonalWidgets(personal_edit = !personal_edit);
+                break;
+
+            case R.id.edit_professional_details:
+                updateProfessionalWidgets(professional_edit = !professional_edit);
+        }
+    }
+
 
 
     private void updatePersonalWidgets(boolean status) {
@@ -306,15 +323,6 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     }
 
-    private void updateDb() {
-
-        FirebaseDatabase.getInstance().getReference(Constants.REPRESENTATIVES)
-                .child(mAuth.getCurrentUser().getUid())
-                .setValue(person);
-
-        Snackbar.make(findViewById(R.id.root_layout),"Details Updated",Snackbar.LENGTH_SHORT)
-                .show();
-    }
 
     private void updateProfessionalWidgets(boolean status) {
 
@@ -354,6 +362,26 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
             et_qualification.setVisibility(View.GONE);
             et_occupation.setVisibility(View.GONE);
 
+
+            //updating person obj
+            if (person.getWorkingPerson() != null) {
+                //Person is at job or is working
+
+                person.getWorkingPerson().setWorkplace_emailId(et_pro_mail.getText().toString());
+                person.getWorkingPerson().setWorkplace_contact_num(et_pro_number.getText().toString());
+                person.getWorkingPerson().setWorkplace_Address(et_pro_address.getText().toString());
+                person.getWorkingPerson().setOccupation(et_occupation.getText().toString());
+                person.getWorkingPerson().setQualifications(et_qualification.getText().toString());
+
+            }else if (person.getStudyingPerson() != null) {
+                //Person is pursuing something or is studying
+
+                person.getStudyingPerson().setPursuing(et_occupation.getText().toString());
+                person.getStudyingPerson().setQualification(et_qualification.getText().toString());
+
+            }
+
+
             tv_pro_mail.setText(et_pro_mail.getText().toString());
             tv_pro_number.setText(et_pro_number.getText().toString());
             tv_pro_address.setText(et_pro_address.getText().toString());
@@ -362,19 +390,19 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
             img_edit_professional.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
 
+            updateDb();
+
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
+    private void updateDb() {
 
-            case R.id.edit_personal_details:
-                updatePersonalWidgets(personal_edit = !personal_edit);
-                break;
+        FirebaseDatabase.getInstance().getReference(Constants.REPRESENTATIVES)
+                .child(mAuth.getCurrentUser().getUid())
+                .setValue(person);
 
-            case R.id.edit_professional_details:
-                updateProfessionalWidgets(professional_edit = !professional_edit);
-        }
+        Snackbar.make(findViewById(R.id.root_layout),"Details Updated",Snackbar.LENGTH_SHORT)
+                .show();
     }
+
 }
