@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -188,9 +189,33 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
         View view = LayoutInflater.from(MyProfileActivity.this)
                 .inflate(R.layout.profilepic_options_dialog,null);
 
+
         builder.setView(view);
 
-        builder.create().show();
+        LinearLayout update = view.findViewById(R.id.update);
+        LinearLayout remove = view.findViewById(R.id.remove);
+
+        final AlertDialog dialog = builder.create();
+
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                selectImage();
+            }
+        });
+
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                removePicture();
+            }
+        });
+
+        dialog.show();
+
 
 
     }
@@ -202,6 +227,50 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 .setAspectRatio(1,1)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(MyProfileActivity.this);
+
+    }
+
+
+    private void removePicture() {
+
+        dialog.setMessage("Removing...");
+        dialog.setCanceledOnTouchOutside(false);
+
+        if (person.getProfile_pic() != null) {
+            final StorageReference reference = FirebaseStorage.getInstance()
+                    .getReferenceFromUrl(person.getProfile_pic());
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    dialog.show();
+                    reference.delete()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    dialog.dismiss();
+                                    person.setProfile_pic(null);
+                                    updateDb("Profile Picture removed!");
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                    dialog.dismiss();
+                                    Toast.makeText(getApplicationContext(),
+                                            "Could not update Profile Pic", Toast.LENGTH_SHORT)
+                                            .show();
+
+                                }
+                            });
+
+                }
+            });
+        }else {
+            Toast.makeText(getApplicationContext(),"You already don't have a profile pic !",Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -231,7 +300,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     private void updateStorage(final Uri resultUri) {
 
-        dialog.setMessage("Updating");
+        dialog.setMessage("Updating ...");
         dialog.setCanceledOnTouchOutside(false);
 
         if (person.getProfile_pic() != null) {
@@ -246,7 +315,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    updateProfilePic(resultUri);
+                                        updateProfilePic(resultUri);
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
