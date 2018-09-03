@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -173,10 +175,26 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
                 break;
 
             case R.id.camera_layout:
-                selectImage();
+               // selectImage();
+                showAlertDialog();
 
         }
     }
+
+    private void showAlertDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyProfileActivity.this);
+
+        View view = LayoutInflater.from(MyProfileActivity.this)
+                .inflate(R.layout.profilepic_options_dialog,null);
+
+        builder.setView(view);
+
+        builder.create().show();
+
+
+    }
+
 
     private void selectImage() {
 
