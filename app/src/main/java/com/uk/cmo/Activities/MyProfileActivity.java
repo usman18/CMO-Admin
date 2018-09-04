@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -101,9 +102,10 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
         ActionBar actionBar = getSupportActionBar();
 
-        //Todo : Add home / back button to action bar
         if (actionBar != null) {
             actionBar.setTitle("Profile");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
         }
 
         initialize();
@@ -112,6 +114,17 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     private void initialize() {
 
