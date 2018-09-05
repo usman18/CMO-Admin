@@ -17,12 +17,84 @@ public class Person {
     private String address;
     private String blood_group;
     private String relation;
+
+
     private WorkingPerson workingPerson;
     private StudyingPerson studyingPerson;
+
+
+    private String approved_by_id;    //id of the admin who approved the request
+    private String approved_by_name;  // name of the admin who approved the request
+    private long approved_at_time;          // time at which profile was approved
+
+    private String declined_by_id;      // if the person is declined be some admin at any stage
+    private String declined_by_name;    // name of the admin who declined the request
+    private String declined_at_time;    // time at which this person's request was declined
+
+    private long profile_created_at;    //time at which profile was created
+
+
 
     private boolean legit;
 
     public Person() {
+    }
+
+
+    public long getProfile_created_at() {
+        return profile_created_at;
+    }
+
+    public void setProfile_created_at(long profile_created_at) {
+        this.profile_created_at = profile_created_at;
+    }
+
+    public String getApproved_by_id() {
+        return approved_by_id;
+    }
+
+    public void setApproved_by_id(String approved_by_id) {
+        this.approved_by_id = approved_by_id;
+    }
+
+    public String getApproved_by_name() {
+        return approved_by_name;
+    }
+
+    public void setApproved_by_name(String approved_by_name) {
+        this.approved_by_name = approved_by_name;
+    }
+
+    public long getApproved_at_time() {
+        return approved_at_time;
+    }
+
+    public void setApproved_at_time(long approved_at_time) {
+        this.approved_at_time = approved_at_time;
+    }
+
+    public String getDeclined_by_id() {
+        return declined_by_id;
+    }
+
+    public void setDeclined_by_id(String declined_by_id) {
+        this.declined_by_id = declined_by_id;
+    }
+
+    public String getDeclined_by_name() {
+        return declined_by_name;
+    }
+
+    public void setDeclined_by_name(String declined_by_name) {
+        this.declined_by_name = declined_by_name;
+    }
+
+    public String getDeclined_at_time() {
+        return declined_at_time;
+    }
+
+    public void setDeclined_at_time(String declined_at_time) {
+        this.declined_at_time = declined_at_time;
     }
 
     public boolean isLegit() {

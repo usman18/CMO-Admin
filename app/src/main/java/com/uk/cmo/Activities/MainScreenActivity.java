@@ -1,6 +1,8 @@
 package com.uk.cmo.Activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -67,6 +69,8 @@ public class MainScreenActivity extends AppCompatActivity {
                         subscribeToPosts();
                         viewPager.setAdapter(viewPagerAdapter);
                         tabLayout.setVisibility(View.VISIBLE);
+                        tabLayout.getTabAt(2).setIcon(getResources()
+                                .getDrawable(R.drawable.ic_notification_bell));
                         msg.setVisibility(View.INVISIBLE);
                         add_post.setVisibility(View.VISIBLE);
                         initializeToken();
@@ -87,6 +91,28 @@ public class MainScreenActivity extends AppCompatActivity {
         msg = findViewById(R.id.auth_msg);
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         tabLayout.setupWithViewPager(viewPager);
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getIcon() != null){
+                    tab.getIcon().setColorFilter(Color.parseColor("#FFFFFF"), PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if (tab.getIcon() != null){
+                    tab.getIcon().setColorFilter(Color.parseColor("#c9cdd1"), PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
 
 
 

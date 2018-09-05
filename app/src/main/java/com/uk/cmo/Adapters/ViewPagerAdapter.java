@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.uk.cmo.Fragments.Members;
+import com.uk.cmo.Fragments.Notifications;
 import com.uk.cmo.Fragments.Posts;
 
 /**
@@ -29,6 +30,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 fragment = Members.getInstance();
                 break;
+            case 2:
+                fragment = Notifications.getInstance();
+                break;
             default:
                 fragment=null;
         }
@@ -37,7 +41,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Nullable
@@ -46,11 +50,12 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         CharSequence title;
         switch (position){
             case 0:
-                title = "POSTS";
-            break;
-            case 1:
-                title = "MEMBERS";
+                title = "Posts";
                 break;
+            case 1:
+                title = "Members";
+                break;
+            case 2:
             default:
                 title = null;
                 break;
