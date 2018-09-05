@@ -143,6 +143,8 @@ public class Notifications extends Fragment {
                     @Override
                     public void onClick(View v) {
 
+                        //Todo : Even make legit true in User
+
                         FirebaseDatabase.getInstance()
                                 .getReference(Constants.REPRESENTATIVES)
                                 .child(model.getID())
@@ -173,6 +175,8 @@ public class Notifications extends Fragment {
                                 .child(model.getID())
                                 .child("legit")
                                 .setValue(false);
+
+                        //Todo : Add declined by id, name and time
 
                     }
                 });

@@ -34,12 +34,19 @@ public class Person {
     private long profile_created_at;    //time at which profile was created
 
 
-
+    private boolean admin;
     private boolean legit;
 
     public Person() {
     }
 
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
 
     public long getProfile_created_at() {
         return profile_created_at;

@@ -81,6 +81,9 @@ public class Members extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
 
+                //Todo : Think about how to show admins in members fragment
+                // Todo : since multiple queries cannot be done.
+
                 query = reference.child(choice).orderByChild(Constants.LOWERCASE_NAME)
                         .startAt(newText.toLowerCase().trim()).endAt(newText.toLowerCase().trim() + "\uf8ff");
                 setUpAdapter(query);

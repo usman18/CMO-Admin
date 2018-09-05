@@ -128,6 +128,9 @@ public class ProfessionalDetailsActivity extends AppCompatActivity implements Co
 
     private void setAllDetails() {
 
+        //Will always be true, since this is admin app
+        person.setAdmin(true);
+
         person.setName(full_name.trim());
         person.setName_lower_case(full_name.toLowerCase().trim());
 
