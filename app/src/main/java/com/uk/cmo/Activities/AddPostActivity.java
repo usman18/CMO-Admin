@@ -1,18 +1,22 @@
 package com.uk.cmo.Activities;
 
-import android.app.Activity;
+import android.animation.LayoutTransition;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,7 +42,19 @@ public class AddPostActivity extends AppCompatActivity {
     private EditText et_description;
     private Uri image_uri;
     private Uri download_uri;
-    private Button btn_submit;
+//    private Button btn_submit;
+    private Button btn_proceed;
+
+    private TextView tv_select_img;
+
+    private LinearLayout line1;
+    private LinearLayout line2;
+
+    private LinearLayout select_img;
+    private FrameLayout img_layout;
+    private ImageView img_dismiss;
+    private ImageView img_edit;
+
     private PostEntity postEntity;
     String uid,post_id;
     String name,pp;
@@ -49,59 +65,101 @@ public class AddPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_post);
 
+        ((ViewGroup) findViewById(R.id.root_layout)).getLayoutTransition()
+                .enableTransitionType(LayoutTransition.CHANGING);
+
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         getUserDetails();
 
         mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
+//        btn_submit = findViewById(R.id.submit_post);
+
+        tv_select_img = findViewById(R.id.tv_select_img);
+        img_edit = findViewById(R.id.img_edit);
+
+        select_img = findViewById(R.id.select_img);
+
+        line1 = findViewById(R.id.line1);
+        line2 = findViewById(R.id.line2);
+
+        img_layout = findViewById(R.id.image_layout);
+        img_dismiss = findViewById(R.id.dismiss_image);
+
         mPostImage = findViewById(R.id.post_image);
         et_description = findViewById(R.id.post_description);
-        btn_submit = findViewById(R.id.submit_post);
+
+        btn_proceed = findViewById(R.id.proceed_button);
+
         postEntity = new PostEntity();
 
-        mPostImage.setOnClickListener(new View.OnClickListener() {
-
+        select_img.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
                         .setAspectRatio(1,1)
                         .start(AddPostActivity.this);
             }
         });
 
-        btn_submit.setOnClickListener(new View.OnClickListener() {
+        img_dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if(et_description.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Post atleast requires et_description !", Toast.LENGTH_SHORT).show();
-                }else if (image_uri != null){
+            public void onClick(View v) {
+                img_layout.setVisibility(View.GONE);
+                image_uri = null;
 
-                    uploadPost();
+                line2.setVisibility(View.GONE);
 
-                }else {
-                    setPostObject();
-                    postEntity.setPost_id(post_id);
+                tv_select_img.setText(R.string.select_img);
+                tv_select_img.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
-                    DatabaseReference reference= mDatabaseReference.child("Posts")
-                            .child(post_id);
-                    reference.setValue(postEntity);
-
-                    Toast.makeText(getApplicationContext(),"Posted Successfully!",Toast.LENGTH_SHORT).show();
-
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent result=new Intent();
-                            result.putExtra("result",true);
-                            setResult(Activity.RESULT_OK,result);
-                            finish();
-                        }
-                    },500);
-
-                }
+                img_edit.setBackground(getResources().getDrawable(R.drawable.ic_action_photo));
             }
         });
+
+//        mPostImage.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View view) {
+//                CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
+//                        .setAspectRatio(1,1)
+//                        .start(AddPostActivity.this);
+//            }
+//        });
+
+//        btn_submit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if(et_description.getText().toString().isEmpty()){
+//                    Toast.makeText(getApplicationContext(),"Post atleast requires et_description !", Toast.LENGTH_SHORT).show();
+//                }else if (image_uri != null){
+//
+//                    uploadPost();
+//
+//                }else {
+//                    setPostObject();
+//                    postEntity.setPost_id(post_id);
+//
+//                    DatabaseReference reference= mDatabaseReference.child("Posts")
+//                            .child(post_id);
+//                    reference.setValue(postEntity);
+//
+//                    Toast.makeText(getApplicationContext(),"Posted Successfully!",Toast.LENGTH_SHORT).show();
+//
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Intent result=new Intent();
+//                            result.putExtra("result",true);
+//                            setResult(Activity.RESULT_OK,result);
+//                            finish();
+//                        }
+//                    },500);
+//
+//                }
+//            }
+//        });
 
     }
 
@@ -157,6 +215,16 @@ public class AddPostActivity extends AppCompatActivity {
 
                 image_uri = result.getUri();
                 mPostImage.setImageURI(image_uri);
+
+                tv_select_img.setText("Image Selected");
+                tv_select_img.setTextColor(Color.parseColor("#19790c"));
+
+                img_edit.setBackground(getResources().getDrawable(R.drawable.ic_action_edit));
+
+                line2.setVisibility(View.VISIBLE);
+
+                img_layout.setVisibility(View.VISIBLE);
+
 
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
 

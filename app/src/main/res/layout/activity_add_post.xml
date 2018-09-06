@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:id="@+id/root_layout"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context="com.uk.cmo.Activities.AddPostActivity">
 
     <ScrollView
@@ -17,15 +19,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp"
+            android:animateLayoutChanges="true"
             >
 
             <LinearLayout
+                android:id="@+id/select_img"
                 android:padding="8dp"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/tv_select_img"
                     android:textStyle="bold"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -39,6 +44,7 @@
 
 
                 <ImageView
+                    android:id="@+id/img_edit"
                     android:layout_gravity="center"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
@@ -49,25 +55,32 @@
             </LinearLayout>
 
             <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/line1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/greycolor"
+                android:layout_marginBottom="8dp"
                 />
 
 
             <FrameLayout
-                android:visibility="visible"
-                android:layout_marginTop="8dp"
+                android:animateLayoutChanges="true"
+                android:id="@+id/image_layout"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <ImageView
+                    android:id="@+id/post_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:background="@drawable/profile_pic"
                     />
+
                 <ImageView
+                    android:id="@+id/dismiss_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/ic_action_cancel"
@@ -77,6 +90,9 @@
             </FrameLayout>
 
             <LinearLayout
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:id="@+id/line2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
@@ -96,6 +112,7 @@
                 />
 
             <EditText
+                android:id="@+id/post_description"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_width="match_parent"
@@ -106,40 +123,7 @@
                 />
 
 
-            <ImageView
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/post_image"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                app:srcCompat="@drawable/profile_pic" />
-            <EditText
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:hint="Enter descrition here..."
-                android:layout_gravity="center"
-                android:textColor="#3d4349"
-                android:id="@+id/post_description"
-                android:maxLines="2"
-                android:background="@drawable/round_edittext"
-                android:padding="12dp"
-                />
 
-            <Button
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@color/colorPrimary"
-                android:padding="16dp"
-                android:textColor="#ffffff"
-                android:text="Submit"
-                android:id="@+id/submit_post"
-                />
         </LinearLayout>
 
 
@@ -147,6 +131,7 @@
 
 
     <Button
+        android:id="@+id/proceed_button"
         android:layout_marginTop="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
