@@ -235,8 +235,8 @@ public class PostAdapter extends RecyclerView.Adapter{
 
     public static class NoticeViewHolder extends RecyclerView.ViewHolder{
 
-        TextView username,timestamp,description;
-        CircleImageView profile_pic;
+        public TextView username,timestamp,description;
+        public CircleImageView profile_pic;
 
 
         public NoticeViewHolder(View itemView) {

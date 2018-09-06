@@ -13,28 +13,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.uk.cmo.Activities.MyPostsActivity;
 import com.uk.cmo.Adapters.PostAdapter;
 import com.uk.cmo.Model.PostEntity;
 import com.uk.cmo.R;
 import com.uk.cmo.Utility.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by usman on 22-02-2018.
  */
 
 public class Posts extends Fragment {
-    private final int POSTS_PER_PAGE = 4;
+    private final int POSTS_PER_PAGE = 5;
     private FirebaseAuth firebaseAuth;
     private ProgressBar loading_progressbar;
     private DatabaseReference reference;
@@ -45,16 +47,36 @@ public class Posts extends Fragment {
     private ArrayList<String> postIDs=new ArrayList<>();
     private PostAdapter adapter;
     private PostEntity last_entity;
-    private boolean isscrolling=false;
+    private boolean isScrolling = false;
+
+    private String mUid;
+    private boolean showAllPosts = true;    //default
+
 
     public static Posts getInstance() {
         return new Posts();
     }
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //Args decide the behavior of Posts fragment, whether to show all posts or only this users posts
+        Bundle args = getArguments();
+
+        if (args != null){
+
+            if (args.getString(MyPostsActivity.UID) != null){
+
+                mUid = args.getString(MyPostsActivity.UID);
+                showAllPosts = false;
+
+            }
+        }
+
+
+
     }
 
     @Nullable
@@ -72,6 +94,14 @@ public class Posts extends Fragment {
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        initialize(view);
+        setUI();
+
+    }
+
+
+    private void initialize(View view) {
+
         reference = FirebaseDatabase.getInstance().getReference(Constants.POSTS);
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -80,53 +110,74 @@ public class Posts extends Fragment {
 
         Log.d("RV ","Before Find View By ID");
         recyclerView = view.findViewById(R.id.post_recyclerview);
-        recyclerView.setHasFixedSize(true);
         mLinearlayoutmanager = new LinearLayoutManager(getActivity());
         mLinearlayoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
 
-        FetchData(0);
         recyclerView.setLayoutManager(mLinearlayoutmanager);
         adapter = new PostAdapter(getContext(), postsArrayList);
         recyclerView.setAdapter(adapter);
 
+    }
 
-        Log.d("RV ","After setting adapter");
+
+    private void setUI() {
+
+        if (showAllPosts) {
+
+            recyclerView.addOnScrollListener(createListener());
+            fetchAllPosts(0);
+
+        }else if (mUid != null) {
+
+            fetchMyPosts();
+
+        }else {
+
+            Toast.makeText(getContext(),"Something went wrong !", Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+
+        }
+
+    }
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    private RecyclerView.OnScrollListener createListener() {
+
+
+        return new RecyclerView.OnScrollListener() {
+
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
+            public void onScrollStateChanged(RecyclerView recyclerView1, int newState) {
+                super.onScrollStateChanged(recyclerView1, newState);
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
-                    isscrolling=true;
+                    isScrolling =true;
             }
 
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int scrolled_items=mLinearlayoutmanager.findFirstVisibleItemPosition();
-                int total_items = mLinearlayoutmanager.getItemCount();
-                int visible=mLinearlayoutmanager.getChildCount();
+            public void onScrolled(RecyclerView recyclerView1, int dx, int dy) {
+                super.onScrolled(recyclerView1, dx, dy);
 
-                if (isscrolling && visible+scrolled_items==total_items) {
-                    isscrolling=false;
+                int scrolled_items = mLinearlayoutmanager.findFirstVisibleItemPosition();
+                int total_items = mLinearlayoutmanager.getItemCount();
+                int visible = mLinearlayoutmanager.getChildCount();
+
+                if (isScrolling && visible+scrolled_items == total_items) {
+                    isScrolling = false;
                     Log.d("CHECKCALL:","FETCH DATA FIRED");
-                    long millis=last_entity.getTimeinmillis();
-                    FetchData(millis);
+
+                    long millis = last_entity.getTimeinmillis();
+                    fetchAllPosts(millis);
 
                 }
 
             }
-        });
-
+        };
 
     }
 
 
 
-
-
-    public  void FetchData(final long millis) {
+    public void fetchAllPosts(final long millis) {
 
         loading_progressbar.setVisibility(View.VISIBLE);
         Log.d("TAG","Data Fetching");
@@ -134,9 +185,12 @@ public class Posts extends Fragment {
             @Override
             public void run() {
                 if (millis == 0) {
+
                     Log.d("CHECKCALL","In if of fetch data");
                     query = reference.orderByChild("timeinmillis").limitToFirst(POSTS_PER_PAGE);
+
                 } else {
+
                     Log.d("CHECKCALL","In else of fetch data");
                     query = reference.limitToFirst(POSTS_PER_PAGE).startAt(millis)
                             .orderByChild("timeinmillis");
@@ -148,20 +202,25 @@ public class Posts extends Fragment {
 
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()){
 
-                            PostEntity entity=snapshot.getValue(PostEntity.class);
-                            if (!postIDs.contains(entity.getPost_id())){
+                            PostEntity entity = snapshot.getValue(PostEntity.class);
+
+                            if (!postIDs.contains(entity.getPost_id())) {
+
                                 postIDs.add(entity.getPost_id());
                                 postsArrayList.add(entity);
-                                Log.d("CHECK: ",entity.getDescription());
-                            }
-                        }
+                                Log.d("CHECK: ", entity.getDescription());
 
+                            }
+
+                        }
 
                         loading_progressbar.setVisibility(View.GONE);
 
-                        if (postsArrayList.size()!=0) {
+                        if (postsArrayList.size() != 0) {
+
                             last_entity = postsArrayList.get(postsArrayList.size() - 1);
                             adapter.notifyDataSetChanged();
+
                         }
                     }
 
@@ -171,54 +230,52 @@ public class Posts extends Fragment {
                     }
                 });
 
-                query.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                            PostEntity entity=snapshot.getValue(PostEntity.class);
-                            if (!postIDs.contains(entity.getPost_id())){
-                                postIDs.add(entity.getPost_id());
-                                postsArrayList.add(entity);
-                                Log.d("CHECK: ",entity.getDescription());
-                            }
-                        }
-
-
-                        loading_progressbar.setVisibility(View.GONE);
-
-                        if (postsArrayList.size()!=0) {
-                            last_entity = postsArrayList.get(postsArrayList.size() - 1);
-                            adapter.notifyDataSetChanged();
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
 
             }
         },1000);
+    }
+
+    public void fetchMyPosts() {
+
+        loading_progressbar.setVisibility(View.VISIBLE);
+
+        query = reference.orderByChild("uid")
+                .equalTo(mUid);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+
+                    PostEntity entity = snapshot.getValue(PostEntity.class);
+
+                    if (!postIDs.contains(entity.getPost_id())) {
+
+                        postIDs.add(entity.getPost_id());
+                        postsArrayList.add(entity);
+
+                    }
+
+                }
+
+                loading_progressbar.setVisibility(View.GONE);
+
+                if (postsArrayList.size() != 0) {
+
+                    Collections.reverse(postsArrayList);
+                    loading_progressbar.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }

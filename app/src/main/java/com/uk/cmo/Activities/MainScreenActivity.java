@@ -141,6 +141,10 @@ public class MainScreenActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
 
+            case R.id.my_posts:
+                startActivity(new Intent(MainScreenActivity.this,MyPostsActivity.class));
+                break;
+
             case R.id.profile:
                 startActivity(new Intent(MainScreenActivity.this,MyProfileActivity.class));
                 break;
