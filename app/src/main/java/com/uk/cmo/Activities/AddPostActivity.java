@@ -63,6 +63,10 @@ public class AddPostActivity extends AppCompatActivity {
     String uid,post_id;
     String name,pp;
 
+    public static final String PERSON_NAME = "name";
+    public static final String PRO_PIC = "profile_pic";
+    public static final String UID = "uid";
+    public static final String POST_ID = "post_id";
     public static final String POST_URI = "post_uri";
     public static final String POST_DESCRIPTION = "post_description";
 
@@ -174,6 +178,11 @@ public class AddPostActivity extends AppCompatActivity {
 
 
                     Intent preview_intent = new Intent(AddPostActivity.this,PreviewActivity.class);
+
+                    preview_intent.putExtra(PERSON_NAME,name);
+                    preview_intent.putExtra(PRO_PIC,pp);
+                    preview_intent.putExtra(UID,uid);
+                    preview_intent.putExtra(POST_ID,post_id);
                     preview_intent.putExtra(POST_DESCRIPTION,mDescription);
                     preview_intent.putExtra(POST_URI,mImage);
                     startActivity(preview_intent);

@@ -17,7 +17,7 @@ public class Date {
         long difference = System.currentTimeMillis() - millis;
 
         if (difference >= DAY_IN_MILLIS){
-            java.text.DateFormat dateFormat=java.text.DateFormat.getDateInstance();
+            java.text.DateFormat dateFormat = java.text.DateFormat.getDateInstance();
             return dateFormat.format(new java.util.Date(millis));
         }else if (difference >= HOUR_IN_MILLIS){
 
@@ -39,4 +39,11 @@ public class Date {
         }
 
     }
+
+    public static String getDate(long millis) {
+        java.text.DateFormat dateformat = java.text.DateFormat.getDateInstance();
+        return dateformat.format(new java.util.Date(millis));
+
+    }
+
 }
