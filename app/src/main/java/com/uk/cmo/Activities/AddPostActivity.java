@@ -8,9 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -59,6 +63,9 @@ public class AddPostActivity extends AppCompatActivity {
     String uid,post_id;
     String name,pp;
 
+    public static final String POST_URI = "post_uri";
+    public static final String POST_DESCRIPTION = "post_description";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +74,8 @@ public class AddPostActivity extends AppCompatActivity {
 
         ((ViewGroup) findViewById(R.id.root_layout)).getLayoutTransition()
                 .enableTransitionType(LayoutTransition.CHANGING);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -115,6 +124,63 @@ public class AddPostActivity extends AppCompatActivity {
                 tv_select_img.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
 
                 img_edit.setBackground(getResources().getDrawable(R.drawable.ic_action_photo));
+            }
+        });
+
+        et_description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (TextUtils.isEmpty(s.toString())){
+
+                    btn_proceed.setBackgroundColor(Color.parseColor("#aeaeae"));
+
+                }else {
+
+
+                    btn_proceed.setBackgroundColor(Color.parseColor("#00bcd4"));
+
+                }
+
+            }
+        });
+
+        btn_proceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (TextUtils.isEmpty(et_description.getText().toString())){
+
+                    et_description.setError("Post needs at least a description");
+
+                }else {
+
+                    String mDescription = et_description.getText().toString();
+                    String mImage = null;
+
+                    if (image_uri != null){
+                        mImage = image_uri.toString();
+                    }
+
+
+                    Intent preview_intent = new Intent(AddPostActivity.this,PreviewActivity.class);
+                    preview_intent.putExtra(POST_DESCRIPTION,mDescription);
+                    preview_intent.putExtra(POST_URI,mImage);
+                    startActivity(preview_intent);
+
+
+                }
+
             }
         });
 

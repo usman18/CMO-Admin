@@ -74,7 +74,8 @@
             <!-- </intent-filter> -->
 
         </activity>
-        <activity android:name=".Activities.MyPostsActivity"></activity>
+        <activity android:name=".Activities.MyPostsActivity" />
+        <activity android:name=".Activities.PreviewActivity"></activity>
     </application>
 
 </manifest>

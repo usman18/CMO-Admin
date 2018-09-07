@@ -76,7 +76,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:background="@drawable/profile_pic"
+                    android:scaleType="fitCenter"
+                    android:adjustViewBounds="true"
                     />
 
                 <ImageView
