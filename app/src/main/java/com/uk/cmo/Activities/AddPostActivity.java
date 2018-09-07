@@ -1,12 +1,10 @@
 package com.uk.cmo.Activities;
 
 import android.animation.LayoutTransition;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -23,16 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 import com.uk.cmo.Model.PostEntity;
@@ -40,7 +33,6 @@ import com.uk.cmo.R;
 import com.uk.cmo.Utility.Constants;
 
 public class AddPostActivity extends AppCompatActivity {
-    private DatabaseReference mDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private ImageView mPostImage;
     private EditText et_description;
@@ -85,10 +77,6 @@ public class AddPostActivity extends AppCompatActivity {
 
         getUserDetails();
 
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
-
-//        btn_submit = findViewById(R.id.submit_post);
-
         tv_select_img = findViewById(R.id.tv_select_img);
         img_edit = findViewById(R.id.img_edit);
 
@@ -111,7 +99,7 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
-                        .setAspectRatio(1,1)
+                        .setAspectRatio(1, 1)
                         .start(AddPostActivity.this);
             }
         });
@@ -145,11 +133,11 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (TextUtils.isEmpty(s.toString())){
+                if (TextUtils.isEmpty(s.toString())) {
 
                     btn_proceed.setBackgroundColor(Color.parseColor("#aeaeae"));
 
-                }else {
+                } else {
 
 
                     btn_proceed.setBackgroundColor(Color.parseColor("#00bcd4"));
@@ -163,28 +151,28 @@ public class AddPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (TextUtils.isEmpty(et_description.getText().toString())){
+                if (TextUtils.isEmpty(et_description.getText().toString())) {
 
                     et_description.setError("Post needs at least a description");
 
-                }else {
+                } else {
 
                     String mDescription = et_description.getText().toString();
                     String mImage = null;
 
-                    if (image_uri != null){
+                    if (image_uri != null) {
                         mImage = image_uri.toString();
                     }
 
 
-                    Intent preview_intent = new Intent(AddPostActivity.this,PreviewActivity.class);
+                    Intent preview_intent = new Intent(AddPostActivity.this, PreviewActivity.class);
 
-                    preview_intent.putExtra(PERSON_NAME,name);
-                    preview_intent.putExtra(PRO_PIC,pp);
-                    preview_intent.putExtra(UID,uid);
-                    preview_intent.putExtra(POST_ID,post_id);
-                    preview_intent.putExtra(POST_DESCRIPTION,mDescription);
-                    preview_intent.putExtra(POST_URI,mImage);
+                    preview_intent.putExtra(PERSON_NAME, name);
+                    preview_intent.putExtra(PRO_PIC, pp);
+                    preview_intent.putExtra(UID, uid);
+                    preview_intent.putExtra(POST_ID, post_id);
+                    preview_intent.putExtra(POST_DESCRIPTION, mDescription);
+                    preview_intent.putExtra(POST_URI, mImage);
                     startActivity(preview_intent);
 
 
@@ -193,91 +181,8 @@ public class AddPostActivity extends AppCompatActivity {
             }
         });
 
-//        mPostImage.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View view) {
-//                CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
-//                        .setAspectRatio(1,1)
-//                        .start(AddPostActivity.this);
-//            }
-//        });
-
-//        btn_submit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(et_description.getText().toString().isEmpty()){
-//                    Toast.makeText(getApplicationContext(),"Post atleast requires et_description !", Toast.LENGTH_SHORT).show();
-//                }else if (image_uri != null){
-//
-//                    uploadPost();
-//
-//                }else {
-//                    setPostObject();
-//                    postEntity.setPost_id(post_id);
-//
-//                    DatabaseReference reference= mDatabaseReference.child("Posts")
-//                            .child(post_id);
-//                    reference.setValue(postEntity);
-//
-//                    Toast.makeText(getApplicationContext(),"Posted Successfully!",Toast.LENGTH_SHORT).show();
-//
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Intent result=new Intent();
-//                            result.putExtra("result",true);
-//                            setResult(Activity.RESULT_OK,result);
-//                            finish();
-//                        }
-//                    },500);
-//
-//                }
-//            }
-//        });
 
     }
-
-    private void setPostObject() {
-
-
-        postEntity.setTimeinmillis(System.currentTimeMillis()*(-1));    // storing in descending order, so latest post comes up
-        postEntity.setDescription(et_description.getText().toString().trim());
-
-        if (name != null) {
-            postEntity.setUser_name(name);
-        }else {
-            Toast.makeText(getApplicationContext(),"User Name Not Found",Toast.LENGTH_LONG).show();
-            finish();
-        }
-
-        postEntity.setUser_pp(pp);
-
-        String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        if (uid != null){
-            postEntity.setUid(uid);
-        }else {
-            finish();
-            Toast.makeText(getApplicationContext(),"UID Not Found ",Toast.LENGTH_SHORT).show();
-        }
-
-        if (post_id != null){
-            postEntity.setPost_id(post_id);
-        }else {
-            finish();       // if no post id, then simply finish
-        }
-
-        if(image_uri != null && download_uri != null) {
-
-            postEntity.setPost_uri(download_uri.toString());
-            postEntity.setPost_type(PostEntity.POST);
-
-        }else {
-            postEntity.setPost_type(PostEntity.NOTICE);
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -359,93 +264,6 @@ public class AddPostActivity extends AppCompatActivity {
 
 
     }
-
-
-
-     private void uploadPost() {
-
-        final ProgressDialog dialog = new ProgressDialog(this);
-        dialog.setMessage("Uploading...");
-        dialog.show();
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-                FirebaseStorage.getInstance()
-                        .getReference(Constants.POST_PICS)
-                        .child(uid)
-                        .child(image_uri.getLastPathSegment() + System.currentTimeMillis())
-                        .putFile(image_uri)
-                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                download_uri = taskSnapshot.getDownloadUrl();
-
-                                postEntity.setTimeinmillis(System.currentTimeMillis() * (-1));
-                                postEntity.setDescription(et_description.getText().toString().trim());
-
-                                if (name != null) {
-                                    postEntity.setUser_name(name);
-                                }else {
-                                    Toast.makeText(getApplicationContext(),"User Name Not Found",Toast.LENGTH_LONG).show();
-                                    finish();
-                                }
-
-                                postEntity.setUser_pp(pp);
-
-                                String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                if (uid!=null){
-                                    postEntity.setUid(uid);
-                                }else {
-                                    finish();
-                                    Toast.makeText(getApplicationContext(),"UID Not Found ",Toast.LENGTH_SHORT).show();
-                                }
-
-                                if (post_id!=null){
-                                    postEntity.setPost_id(post_id);
-                                }else {
-                                    finish();
-                                }
-
-                                if(image_uri != null && download_uri != null) {
-
-                                    postEntity.setPost_uri(download_uri.toString());
-                                    postEntity.setPost_type(PostEntity.POST);
-
-                                }else {
-                                    postEntity.setPost_type(PostEntity.NOTICE);
-                                }
-
-
-                                FirebaseDatabase.getInstance().getReference(Constants.POSTS)
-                                        .child(post_id)
-                                        .setValue(postEntity);
-
-                                dialog.dismiss();
-
-                                Toast.makeText(getApplicationContext(),"Posted Successfully!",Toast.LENGTH_LONG).show();
-
-                                finish();
-
-
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(),"Could not post",Toast.LENGTH_LONG).show();
-                        dialog.dismiss();
-                        finish();
-                    }
-                });
-
-
-
-            }
-        });
-
-     }
 
 
 }
