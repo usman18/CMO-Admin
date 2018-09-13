@@ -71,6 +71,11 @@ public class Posts extends Fragment {
 
                 mUid = args.getString(MyPostsActivity.UID);
                 showAllPosts = false;
+                Log.d("Check","uid is " + mUid);
+
+            }else {
+
+                Log.d("Check","uid is null");
 
             }
         }
@@ -106,7 +111,7 @@ public class Posts extends Fragment {
         loading_progressbar = view.findViewById(R.id.loading_progressbar);
         loading_progressbar.setVisibility(View.VISIBLE);
 
-        Log.d("RV ","Before Find View By ID");
+        Log.d("Check ","rv Before Find View By ID");
         recyclerView = view.findViewById(R.id.post_recyclerview);
         mLinearlayoutmanager = new LinearLayoutManager(getActivity());
         mLinearlayoutmanager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -127,6 +132,7 @@ public class Posts extends Fragment {
 
         }else if (mUid != null) {
 
+            Log.d("Check","Bf fetch my posts");
             fetchMyPosts();
 
         }else {
@@ -240,16 +246,20 @@ public class Posts extends Fragment {
         query = reference.orderByChild("uid")
                 .equalTo(mUid);
 
+
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
 
+                    Log.d("Check","In for loop");
+
                     PostEntity entity = snapshot.getValue(PostEntity.class);
 
                     if (!postIDs.contains(entity.getPost_id())) {
 
+                        Log.d("Check","Post id is " + entity.getPost_id());
                         postIDs.add(entity.getPost_id());
                         postsArrayList.add(entity);
 

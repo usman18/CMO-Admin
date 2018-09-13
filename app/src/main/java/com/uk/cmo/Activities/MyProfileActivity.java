@@ -238,6 +238,7 @@ public class MyProfileActivity extends AppCompatActivity implements View.OnClick
 
         CropImage.activity()
                 .setAspectRatio(1,1)
+                .setOutputCompressQuality(50)
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(MyProfileActivity.this);
 
