@@ -100,6 +100,7 @@ public class AddPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 CropImage.activity().setGuidelines(CropImageView.Guidelines.ON)
                         .setAspectRatio(1, 1)
+                        .setOutputCompressQuality(50)
                         .start(AddPostActivity.this);
             }
         });

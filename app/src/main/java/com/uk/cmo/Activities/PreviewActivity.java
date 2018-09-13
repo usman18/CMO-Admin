@@ -1,6 +1,7 @@
 package com.uk.cmo.Activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -151,6 +151,9 @@ public class PreviewActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private void uploadPost() {
 
         postEntity.setPost_type(PostEntity.POST);
@@ -212,6 +215,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     }
 
+
     private void saveToDb() {
 
 
@@ -224,7 +228,6 @@ public class PreviewActivity extends AppCompatActivity {
         Intent main_screen = new Intent(PreviewActivity.this,MainScreenActivity.class);
         main_screen.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(main_screen);
-
 
     }
 
