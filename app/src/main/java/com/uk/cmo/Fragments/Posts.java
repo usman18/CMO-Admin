@@ -200,7 +200,7 @@ public class Posts extends Fragment {
                             .orderByChild("timeinmillis");
                 }
                 query.keepSynced(true);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -247,7 +247,7 @@ public class Posts extends Fragment {
                 .equalTo(mUid);
 
 
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

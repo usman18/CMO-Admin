@@ -110,7 +110,7 @@ public class PreviewActivity extends AppCompatActivity {
         tvPersonName.setText(mPersonName.trim());
 
         Glide.with(PreviewActivity.this)
-                .load(mProfilePic.trim())
+                .load(mProfilePic)
                 .apply(new RequestOptions().placeholder(R.drawable.profile))
                 .into(imgProfilePic);
 
@@ -182,7 +182,7 @@ public class PreviewActivity extends AppCompatActivity {
 
                                 postEntity.setUser_name(mPersonName.trim());
 
-                                postEntity.setUser_pp(mProfilePic.trim());
+                                postEntity.setUser_pp(mProfilePic);
 
                                 postEntity.setUid(mUid.trim());
 
